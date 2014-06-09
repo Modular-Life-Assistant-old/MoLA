@@ -53,8 +53,14 @@ def stop(name):
 def stop_all():
     """Stop all modules.
     """
-    # todo
-    pass
+    nb = 0
+
+    for name in __module_list:
+        if __module_list[name]['instance']:
+            stop(name)
+            nb += 1
+
+    Log.debug('%d modules stoped' % nb)
 
 
 def __load_module_list():
