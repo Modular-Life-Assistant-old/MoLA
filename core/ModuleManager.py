@@ -3,6 +3,8 @@
 
 from core import Log
 
+import os
+
 __module_list = {} # module data
 
 
@@ -30,8 +32,15 @@ def start(name):
 def start_all():
     """Start all modules.
     """
-    # todo
-    pass
+    __load_module_list()
+    nb = 0
+
+    for name in __module_list:
+        if not __module_list[name]['disable']:
+            start(name)
+            nb += 1
+
+    Log.debug('%d modules started' % nb)
 
 
 def stop(name):
@@ -51,12 +60,20 @@ def stop_all():
 def __load_module_list():
     """Add all modules in module_list.
     """
-    modules_list = sorted(os.listdir(Variables.root_path + 'modules'))
+    global __module_list
+
+    if __module_list:
+        return
+
+    from core import Daemon
+
+    dir_list = sorted(os.listdir(Daemon.MODULES_PATH))
     nb = 0
 
-    for name in modules_list:
+    for name in dir_list:
         __module_list[name] = {
             'instance': None,
+            'disable':  False,
         }
         nb += 1
 
