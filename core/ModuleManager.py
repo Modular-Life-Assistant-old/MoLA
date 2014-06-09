@@ -71,10 +71,11 @@ def __load_module_list():
     nb = 0
 
     for name in dir_list:
-        __module_list[name] = {
-            'instance': None,
-            'disable':  False,
-        }
-        nb += 1
+        if os.path.isdir('%s%s' % (Daemon.MODULES_PATH, name)):
+            __module_list[name] = {
+                'instance': None,
+                'disable':  False,
+            }
+            nb += 1
 
     Log.debug('%d modules loaded' % nb)
