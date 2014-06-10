@@ -8,6 +8,21 @@ import os
 __module_list = {} # module data
 
 
+def call_module_method(module_name, method_name, *arg):
+    """Call module method.
+    """
+    if not module_name in __module_list:
+        return False
+
+    if not __module_list[module_name]['instance']:
+        return False
+
+    if not hasattr(__module_list[module_name]['instance'], method_name):
+        return False
+
+    return getattr(__module_list[module_name]['instance'], method_name)(*arg)
+
+
 def get(name):
     """Get module instance.
     """
@@ -15,9 +30,32 @@ def get(name):
 
 
 def load(name):
-    """Start module.
+    """load module.
     """
-    # todo
+    dir_path = '%s%s/' % (Daemon.MODULES_PATH, name)
+    if not os.path.isdir(dir_path)):
+        return False
+
+    if name in __module_list and not __module_list[name]['instance']:
+        module_path = '%sModule.py' % dir_path
+        if os.path.isfile(module_path):
+            return False
+
+        try:
+            __module_list[name]['instance'] = __import__(
+                'modules.' + name + '.Module',
+                globals(),
+                locals(),
+                ['Module'],
+                -1
+            ).Module()
+
+        except ImportError as e:
+            Log.error('Import error, module %s (%s)' % (name, e))
+            return False
+
+    call_module_method(name, 'load_configuration')
+
     return True
 
 
