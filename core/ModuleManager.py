@@ -32,8 +32,9 @@ def get(name):
 def load(name):
     """load module.
     """
+    from core import Daemon
     dir_path = '%s%s/' % (Daemon.MODULES_PATH, name)
-    if not os.path.isdir(dir_path)):
+    if not os.path.isdir(dir_path):
         return False
 
     if name in __module_list and not __module_list[name]['instance']:
@@ -70,7 +71,7 @@ def load_all():
             load(name)
             nb += 1
 
-    Log.debug('%d config modules loaded' % nb)
+    Log.debug('%d modules loaded' % nb)
 
 
 def restart(name):
@@ -143,4 +144,4 @@ def __load_module_list():
             }
             nb += 1
 
-    Log.debug('%d modules loaded' % nb)
+    Log.debug('%d modules indexed' % nb)
