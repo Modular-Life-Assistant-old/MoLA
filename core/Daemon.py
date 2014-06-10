@@ -25,6 +25,7 @@ def start():
     """Start daemon.
     """
     Log.init()
+    ModuleManager.load_all()
     ModuleManager.start_all()
 
     try:

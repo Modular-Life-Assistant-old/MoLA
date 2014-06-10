@@ -14,6 +14,27 @@ def get(name):
     return __module_list[name]['instance'] if name in __module_list else None
 
 
+def load(name):
+    """Start module.
+    """
+    # todo
+    return True
+
+
+def load_all():
+    """Start all modules.
+    """
+    __load_module_list()
+    nb = 0
+
+    for name in __module_list:
+        if not __module_list[name]['disable']:
+            load(name)
+            nb += 1
+
+    Log.debug('%d config modules loaded' % nb)
+
+
 def restart(name):
     """Restart module.
     """
