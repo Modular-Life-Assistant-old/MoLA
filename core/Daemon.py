@@ -9,9 +9,7 @@ import os
 import time
 
 name = 'MoLA'
-running = True
 start_time = time.time()
-
 ROOT_PATH = '%s/' % os.sep.join(__file__.split(os.sep)[:-2])
 MODULES_PATH = '%smodules/' % ROOT_PATH
 
@@ -28,31 +26,25 @@ def start():
     """
     Log.init()
     ModuleManager.start_all()
-    asyncio.get_event_loop().run_until_complete(__run())
+
+    try:
+        asyncio.get_event_loop().run_forever()
+
+    except Exception as e:
+        Log.crash(e)
+
+    finally:
+        __stop()
 
 
 def stop():
     """Stop daemon.
     """
     Log.debug('stop deamon')
-    running = False
-
-
-@asyncio.coroutine
-def __run():
-    """Stop daemon.
-    """
-    try:
-        while running:
-            yield from asyncio.sleep(5)
-
-    except Exception as e:
-        Log.crash(e)
-
-    __stop()
+    asyncio.get_event_loop().stop()
 
 
 def __stop():
     """Stop daemon.
     """
-    pass
+    ModuleManager.stop_all()
