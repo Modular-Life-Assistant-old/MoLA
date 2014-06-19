@@ -11,6 +11,7 @@ import time
 name = 'MoLA'
 start_time = time.time()
 ROOT_PATH = '%s/' % os.sep.join(__file__.split(os.sep)[:-2])
+CONFIGS_PATH = '%sconfigs/' % ROOT_PATH
 MODULES_PATH = '%smodules/' % ROOT_PATH
 
 

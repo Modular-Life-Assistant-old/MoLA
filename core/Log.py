@@ -1,5 +1,7 @@
 import json
 import logging
+import logging.config
+import os
 
 
 __logger = None
@@ -8,50 +10,77 @@ __logger = None
 def init():
     from core import Daemon
     global __logger
+    log_list = []
 
+    with open('%slog.conf' % Daemon.CONFIGS_PATH) as config_file:
+        config = json.load(config_file)
+
+        # place in log directory
+        if 'handlers' in config:
+            log_path = '%slogs/' % Daemon.ROOT_PATH
+
+            if not os.path.exists(log_path):
+                os.makedirs(log_path)
+
+            for handler in config['handlers']:
+                if not 'filters' in config['handlers'][handler]:
+                    config['handlers'][handler]['filters'] = []
+
+                if not 'tagsFilter' in config['handlers'][handler]['filters']:
+                    config['handlers'][handler]['filters'].append('tagsFilter')
+
+                if 'filename' in config['handlers'][handler] and config['handlers'][handler]['filename']:
+                    config['handlers'][handler]['filename'] = '%s%s' % (
+                        log_path,
+                        config['handlers'][handler]['filename']
+                    )
+                    log_list.append(config['handlers'][handler] )
+
+            if not 'filters' in config:
+                config['filters'] = {}
+
+            if not 'tagsFilter' in config['filters']:
+                config['filters']['tagsFilter'] = {
+                    '()': 'core.Log.TagsFilter',
+                }
+
+        logging.config.dictConfig(config)
     __logger = logging.getLogger(Daemon.name)
-    log_path = '%s%s.log' % (Daemon.ROOT_PATH, Daemon.name)
 
-    hdlr = logging.FileHandler(log_path)
-    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-    hdlr.setFormatter(formatter)
-
-    __logger.addHandler(hdlr) 
-    __logger.setLevel(logging.DEBUG)
-    debug('Log in %s' % log_path)
+    for log in log_list:
+        debug('Log %s in %s' % (
+            log['level'] if 'level' in log else 'Unknow level', 
+            log['filename']
+        ))
 
 
 def crash(text):
     __logger.critical(text, exc_info=True)
-    print('Crash: %s' % text)
 
 
 def critical(text, tag=[]): # score: 50
-    __logger.critical(__set_tag(text, tag))
-    print('Critical: %s' % text)
+    __logger.critical(text, extra={'tags':tag})
 
 
 def debug(text, tag=[]): # score: 10
-    __logger.debug(__set_tag(text, tag))
-    print('Debug: %s' % text)
+    __logger.debug(text, extra={'tags':tag})
 
 
 def error(text, tag=[]): # score: 40
-    __logger.error(__set_tag(text, tag))
-    print('Error: %s' % text)
+    __logger.error(text, extra={'tags':tag})
 
 
 def info(text, tag=[]): # score: 20
-    __logger.info(__set_tag(text, tag))
-    print('Info: %s' % text)
+    __logger.info(text, extra={'tags':tag})
 
 
 def warning(text, tag=[]):# score: 30
-    __logger.warn(__set_tag(text, tag))
-    print('Warning: %s' % text)
+    __logger.warn(text, extra={'tags':tag})
 
 
-def __set_tag(text, tag):
-    if tag:
-        text += ' tag:' + json.dumps(tag)
-    return text
+class TagsFilter(logging.Filter):
+    def filter(self, record):
+        dir(record)
+        if hasattr(record, 'tags') and record.tags:
+            record.msg += ' Tags: %s' % json.dumps(record.tags)
+        return record
