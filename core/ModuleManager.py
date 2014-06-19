@@ -33,21 +33,57 @@ def call_module_method(module_name, method_name, *arg):
     return getattr(__module_list[module_name]['instance'], method_name)(*arg)
 
 
+def disable_module(module_name, disabled=True):
+    """Disable a module.
+    """
+    if module_name in __module_list:
+        return False
+
+    from core import Daemon
+    path = '%s%s/disable' % (Daemon.MODULES_PATH, module_name)
+
+    if disabled:
+        stop(module_name)
+
+        with open(path, 'a'):
+            os.utime(path, None)
+
+        return True
+
+    else:
+        if os.path.isfile(path):
+            os.remove(path)
+
+        start(module_name)
+
+
 def get(module_name):
     """Get module instance.
     """
     return __module_list[module_name]['instance'] if module_name in __module_list else None
 
 
-def load(module_name):
-    """load module.
+def is_module_disabled(module_name):
+    """Is module disable.
     """
     from core import Daemon
     dir_path = '%s%s/' % (Daemon.MODULES_PATH, module_name)
     if not os.path.isdir(dir_path):
+        return True
+
+    return os.path.isfile('%s/disable' % dir_path)
+
+
+def load(module_name):
+    """load module.
+    """
+    if is_module_disabled(module_name):
         return False
 
     if module_name in __module_list and not __module_list[module_name]['instance']:
+        from core import Daemon
+        dir_path = '%s%s/' % (Daemon.MODULES_PATH, module_name)
+
         module_path = '%sModule.py' % dir_path
         if not os.path.isfile(module_path):
             return False
@@ -93,6 +129,9 @@ def restart(module_name):
 def start(module_name):
     """Start module.
     """
+    if is_module_disabled(module_name):
+        return False
+
     if not module_name in __module_list or not __module_list[module_name]['instance']:
         return False
 
@@ -168,19 +207,22 @@ def __load_module_list():
         return
 
     from core import Daemon
-
     dir_list = sorted(os.listdir(Daemon.MODULES_PATH))
     nb = 0
 
     for module_name in dir_list:
-        if os.path.isdir('%s%s' % (Daemon.MODULES_PATH, module_name)):
-            if '__pycache__' in module_name:
-                continue
+        dir_path = '%s%s/' % (Daemon.MODULES_PATH, module_name)
 
-            __module_list[module_name] = {
-                'instance': None,
-                'disable':  False,
-            }
-            nb += 1
+        if is_module_disabled(module_name):
+            continue
+
+        if '__pycache__' in module_name:
+            continue
+
+        __module_list[module_name] = {
+            'instance': None,
+            'disable':  False,
+        }
+        nb += 1
 
     Log.debug('%d modules indexed' % nb)
