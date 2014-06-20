@@ -70,12 +70,17 @@ def error(text, tag=[]): # score: 40
     __logger.error(text, extra={'tags':tag})
 
 
+def get_logger():
+    return __logger
+
+
 def info(text, tag=[]): # score: 20
     __logger.info(text, extra={'tags':tag})
 
 
 def warning(text, tag=[]):# score: 30
     __logger.warn(text, extra={'tags':tag})
+
 
 
 class TagsFilter(logging.Filter):
