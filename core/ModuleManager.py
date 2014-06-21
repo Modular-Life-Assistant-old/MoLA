@@ -74,8 +74,8 @@ def is_module_disabled(module_name):
     return os.path.isfile('%s/disable' % dir_path)
 
 
-def load(module_name):
-    """load module.
+def init(module_name):
+    """Init module.
     """
     if is_module_disabled(module_name):
         return False
@@ -100,13 +100,37 @@ def load(module_name):
             Log.error('Import error, module %s (%s)' % (module_name, e))
             return False
 
-    call_module_method(module_name, 'load_configuration')
-
     return True
 
 
+def init_all():
+    """Init all modules.
+    """
+    __load_module_list()
+    nb = 0
+
+    for module_name in __module_list:
+        if not __module_list[module_name]['disable'] and init(module_name):
+            nb += 1
+
+    Log.debug('%d modules initialized' % nb)
+
+
+def load(module_name):
+    """Load module.
+    """
+    if is_module_disabled(module_name):
+        return False
+
+    if module_name in __module_list and __module_list[module_name]['instance']:
+        call_module_method(module_name, 'load_configuration')
+        return True
+
+    return False
+
+
 def load_all():
-    """Start all modules.
+    """Load all modules.
     """
     __load_module_list()
     nb = 0
