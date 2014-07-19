@@ -47,10 +47,6 @@ def stop():
     """Stop daemon.
     """
     Log.debug('stop deamon')
+    ModuleManager.stop_all()
     asyncio.get_event_loop().stop()
 
-
-def __stop():
-    """Stop daemon.
-    """
-    ModuleManager.stop_all()
