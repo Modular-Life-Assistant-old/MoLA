@@ -159,6 +159,7 @@ def start(module_name):
     if not module_name in __module_list or not __module_list[module_name]['instance']:
         return False
 
+    call_module_method(module_name, 'start')
     __call_method_action(module_name, 'handle_start')
 
     return True
@@ -182,6 +183,7 @@ def stop(module_name):
     """
     Log.debug('stop modules %s' % module_name)
 
+    call_module_method(module_name, 'stop')
     __call_method_action(module_name, 'handle_stop')
 
     return True
