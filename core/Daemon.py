@@ -30,7 +30,17 @@ def start():
     ModuleManager.load_all()
     ModuleManager.start_all()
 
-    asyncio.get_event_loop().run_forever()
+    try:
+        asyncio.get_event_loop().run_forever()
+
+    except KeyboardInterrupt:
+        Log.debug('Exit : KeyboardInterrupt')
+
+    except Exception as e:
+        Log.crash(e)
+
+    finally:
+        stop()
 
 
 def stop():
