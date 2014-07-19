@@ -30,14 +30,7 @@ def start():
     ModuleManager.load_all()
     ModuleManager.start_all()
 
-    try:
-        asyncio.get_event_loop().run_forever()
-
-    except Exception as e:
-        Log.crash(e)
-
-    finally:
-        __stop()
+    asyncio.get_event_loop().run_forever()
 
 
 def stop():
