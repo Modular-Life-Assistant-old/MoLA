@@ -25,7 +25,11 @@ def trigger(event_name, *args):
     nb = 0
 
     for handle in __event_handle_list[event_name]:
-        handle(*arg)
-        nb += 1
+        try:
+            handle(*args)
+            nb += 1
+
+        except Exception as e:
+            Log.crash(e)
 
     Log.debug('trigger %d "%s" event' % (event_name, nb))
