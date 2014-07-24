@@ -15,7 +15,7 @@ def bind(event_name, handle):
     Log.debug('bin event : "%s" to "%s"' % (event_name, str(handle)))
 
 
-def trigger(event_name, *args):
+def trigger(event_name, **kwargs):
     """Execute all handlers attached to the event.
     """
     if not event_name in __event_handle_list:
@@ -26,7 +26,7 @@ def trigger(event_name, *args):
 
     for handle in __event_handle_list[event_name]:
         try:
-            handle(*args)
+            handle(kwargs)
             nb += 1
 
         except Exception as e:
