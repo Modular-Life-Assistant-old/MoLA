@@ -32,4 +32,4 @@ def trigger(event_name, **kwargs):
         except Exception as e:
             Log.crash(e)
 
-    Log.debug('trigger %d "%s" event' % (event_name, nb))
+    Log.debug('trigger %d "%s" event' % (nb, event_name))
