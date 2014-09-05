@@ -133,13 +133,10 @@ def load_all():
     """Load all modules.
     """
     __load_module_list()
-    nb = 0
 
-    for module_name in __module_list:
-        if not __module_list[module_name]['disable'] and load(module_name):
-            nb += 1
+    loaded = [load(module_name) for module_name in __module_list]
 
-    Log.debug('%d modules loaded' % nb)
+    Log.debug('%d modules loaded' % sum(loaded))
 
 
 def restart(module_name):
