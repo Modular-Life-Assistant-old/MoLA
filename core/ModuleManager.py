@@ -107,13 +107,9 @@ def init_all():
     """Init all modules.
     """
     __load_module_list()
-    nb = 0
+    loaded = [init(module_name) for module_name in __module_list]
 
-    for module_name in __module_list:
-        if not __module_list[module_name]['disable'] and init(module_name):
-            nb += 1
-
-    Log.debug('%d modules initialized' % nb)
+    Log.debug('%d modules initialized' % sum(loaded))
 
 
 def load(module_name):
@@ -133,7 +129,6 @@ def load_all():
     """Load all modules.
     """
     __load_module_list()
-
     loaded = [load(module_name) for module_name in __module_list]
 
     Log.debug('%d modules loaded' % sum(loaded))
