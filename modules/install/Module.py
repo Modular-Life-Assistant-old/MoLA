@@ -20,11 +20,19 @@ class Module:
             Log.error('Not config file')
             return {}
 
-        # TODO
-        for config in self.__configs:
-            print('%s' % config['name'])
-            
-        return {}
+        print('')
+
+        while True:
+            for id, config in enumerate(self.__configs):
+                print('    %d) %s: %s' % 
+                    (id+1, config['name'], config['description']))
+
+            id = int(input('Your choice ID? '))
+
+            if id and id > 0 and id <= len(self.__configs):
+                return self.__configs[id-1]
+
+            print('Incorrect choice ID')
 
     def install_git_module(self, url):
         return self.install_module_dependencies(subprocess.getoutput(
@@ -71,8 +79,10 @@ class Module:
 
     def start(self):
         config = self.choice_config()
+        if not config:
+            return
+
         self.install_modules(config)
-        
         Log.debug('install sucessfull')
         Daemon.restart()
 

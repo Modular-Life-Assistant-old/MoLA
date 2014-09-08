@@ -1,0 +1,12 @@
+{
+    "name": "Domotic",
+    "description": "Control your home.",
+    "modules_require": [
+        "git:git@github.com:treemo/MoLA-http_client-module.git",
+        "git:git@github.com:treemo/MoLA-perf_average_check-module.git",
+        "git:git@github.com:treemo/MoLA-mola_network-module.git",
+        "git:git@github.com:treemo/MoLA-security_alert_log-module.git",
+        "git:git@github.com:treemo/MoLA-module_handle_thread-module.git",
+        "git:git@github.com:treemo/MoLA-internet_connection_check-module.git"
+    ]
+}

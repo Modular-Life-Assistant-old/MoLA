@@ -1,0 +1,5 @@
+{
+    "name": "Empty",
+    "description": "no modules will be installed.",
+    "modules_require": []
+}
