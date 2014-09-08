@@ -1,0 +1,78 @@
+from core import Daemon
+from core import Log
+from core import ModuleManager
+
+import json
+import os
+import subprocess
+
+class Module:
+    __configs = []
+
+    def add_config(self, **options):
+        self.__configs.append(options)
+        
+    def choice_config(self):
+        if len(self.__configs) == 1:
+            return self.__configs[0]
+
+        if not len(self.__configs):
+            Log.error('Not config file')
+            return {}
+
+        # TODO
+        for config in self.__configs:
+            print('%s' % config['name'])
+            
+        return {}
+
+    def install_git_module(self, url):
+        return self.install_module_dependencies(subprocess.getoutput(
+            'cd "%s" && git clone "%s"' % (Daemon.MODULES_PATH, url)
+        ).split('\n')[0].split()[-1].replace('.', '').replace("'", ''))
+
+    def install_module(self, name):
+        Log.debug('install %s module' % name)
+
+        if name.startswith('git:'):
+            return self.install_git_module(name[4:])
+
+        return self.install_mola_module(name)
+
+    def install_module_dependencies(self, name):
+        return True
+
+    def install_modules(self, config):
+        installed = [self.install_module(name) 
+            for name in config['modules_require']]
+        Log.debug('%d modules installed' % sum(installed))
+        return len(config['modules_require']) == sum(installed)
+    
+    def install_mola_module(self, name):
+        # TODO
+        return self.install_module_dependencies(name)
+
+    def load_configuration(self):
+        conf_path = '%s/config/' % os.path.dirname(os.path.abspath(__file__))
+        liste = os.listdir(conf_path)
+        loaded = [self.read_config_file(conf_path + name) for name in liste]
+        Log.debug('%d install config load' % sum(loaded))
+
+    def read_config_file(self, path):
+        if not os.path.isfile(path):
+            return False
+
+        with open(path) as config_file:
+            self.add_config(**json.load(config_file))
+            return True
+
+        Log.error('config file "%s" not found' % path)
+        return False
+
+    def start(self):
+        config = self.choice_config()
+        self.install_modules(config)
+        
+        Log.debug('install sucessfull')
+        Daemon.restart()
+
