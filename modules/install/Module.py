@@ -4,6 +4,7 @@ from core import ModuleManager
 
 import json
 import os
+import shutil
 import subprocess
 
 class Module:
@@ -84,5 +85,6 @@ class Module:
 
         self.install_modules(config)
         Log.debug('install sucessfull')
+        shutil.rmtree('%sinstall' % Daemon.MODULES_PATH)
         Daemon.restart()
 
