@@ -27,7 +27,6 @@ def restart():
     launch_daemon()
     
 
-
 def start():
     """Start daemon.
     """
