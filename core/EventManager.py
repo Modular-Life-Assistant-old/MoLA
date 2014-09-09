@@ -2,17 +2,22 @@
 """
 
 from core import Log
+from core import ModuleManager
 
 __event_handle_list = {}
 
-
-def bind(event_name):
-    """Decorator for function.
+def bind_auto():
+    """Automatic event binding.
     """
-    def decorator(handle):
+    def start_module(module_name, handle):
+        print(module_name)
+        event_name = handle.__name__.replace('event_', '')
         bind_handle(event_name, handle)
-        return handle
-    return decorator
+
+    ModuleManager.add_method_action(
+        'event',
+        handle_start=start_module,
+    )
 
 
 def bind_handle(event_name, handle):
@@ -22,7 +27,7 @@ def bind_handle(event_name, handle):
         __event_handle_list[event_name] = []
 
     __event_handle_list[event_name].append(handle)
-    Log.debug('bin event : "%s" to "%s"' % (event_name, str(handle)))
+    Log.debug('bind event : "%s" to "%s"' % (event_name, str(handle)))
 
 
 def trigger(event_name, **data):

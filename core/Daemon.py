@@ -1,6 +1,7 @@
 """Librairie to manage daemon.
 """
 
+from core import EventManager
 from core import Log
 from core import ModuleManager
 
@@ -31,6 +32,7 @@ def start():
     """Start daemon.
     """
     Log.init()
+    EventManager.bind_auto()
     ModuleManager.init_all()
     ModuleManager.load_all()
     ModuleManager.start_all()

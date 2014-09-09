@@ -8,6 +8,7 @@ import os
 __module_list = {} # module data
 __action_method_list = []
 
+
 def add_method_action(method_name, handle_start=None, handle_stop=None):
     """Add a method action.
     """
@@ -244,3 +245,4 @@ def __load_module_list():
         nb += 1
 
     Log.debug('%d modules indexed' % nb)
+
