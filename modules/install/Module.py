@@ -36,8 +36,9 @@ class Module:
             print('Incorrect choice ID')
 
     def install_git_module(self, url):
+        module_name = url.split('/')[-1].split('-')[1]
         return self.install_module_dependencies(subprocess.getoutput(
-            'cd "%s" && git clone "%s"' % (Daemon.MODULES_PATH, url)
+            'git clone "%s" "%s%s"' % (url,Daemon.MODULES_PATH, module_name)
         ).split('\n')[0].split()[-1].replace('.', '').replace("'", ''))
 
     def install_module(self, name):
