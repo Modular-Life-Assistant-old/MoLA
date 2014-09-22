@@ -1,11 +1,15 @@
 """Librairie to manage circuits.
 """
-
 from core import Log
 
+from circuits.app import daemon
 from circuits import Manager
 
 __manager = Manager()
+
+
+def addHandler(handler):
+    __manager.addHandler(handler)
 
 
 def register(instance):
@@ -15,6 +19,13 @@ def register(instance):
 def run_loop():
     if Log.has_debug():
         from circuits import Debugger
-        Debugger(logger=Log.get_logger()).register(__manager)
+        register(Debugger(logger=Log.get_logger()))
+
+    else:
+        from core import Daemon
+        register(daemon.Daemon(
+            '%s.pid' % Daemon.name,
+            path=Daemon.ROOT_PATH
+        ))
 
     __manager.run()
