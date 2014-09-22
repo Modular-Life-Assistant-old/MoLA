@@ -145,7 +145,10 @@ def start(module_name):
     if not module_name in __module_list or __module_list[module_name]['instance'] is None:
         return False
 
-    CircuitsManager.register(__module_list[module_name]['instance'])
+    # is Circuits module ?
+    if hasattr(__module_list[module_name]['instance'], 'register'):
+        CircuitsManager.register(__module_list[module_name]['instance'])
+
     return True
 
 
