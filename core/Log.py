@@ -74,6 +74,10 @@ def get_logger():
     return __logger
 
 
+def has_debug():
+    return __logger.isEnabledFor(logging.DEBUG)
+
+
 def info(text, tag=[]): # score: 20
     __logger.info(text, extra={'tags':tag})
 

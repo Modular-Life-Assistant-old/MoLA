@@ -1,22 +1,12 @@
 """Librairie to manage modules.
 """
 
+from core import CircuitsManager
 from core import Log
 
 import os
 
-__module_list = {} # module data
-__action_method_list = []
-
-
-def add_method_action(method_name, handle_start=None, handle_stop=None):
-    """Add a method action.
-    """
-    __action_method_list.append({
-        'method_name':  method_name,
-        'handle_start': handle_start,
-        'handle_stop':  handle_stop,
-    })
+__module_list = {}  # module data
 
 
 def call_module_method(module_name, method_name, *arg):
@@ -41,6 +31,7 @@ def disable_module(module_name, disabled=True):
         return False
 
     from core import Daemon
+
     path = '%s%s/disable' % (Daemon.MODULES_PATH, module_name)
 
     if disabled:
@@ -68,6 +59,7 @@ def is_module_disabled(module_name):
     """Is module disable.
     """
     from core import Daemon
+
     dir_path = '%s%s/' % (Daemon.MODULES_PATH, module_name)
     if not os.path.isdir(dir_path):
         return True
@@ -83,6 +75,7 @@ def init(module_name):
 
     if module_name in __module_list and not __module_list[module_name]['instance']:
         from core import Daemon
+
         dir_path = '%s%s/' % (Daemon.MODULES_PATH, module_name)
 
         module_path = '%sModule.py' % dir_path
@@ -99,6 +92,10 @@ def init(module_name):
 
         except ImportError as e:
             Log.error('Import error, module %s (%s)' % (module_name, e))
+            return False
+
+        except AttributeError as e:
+            Log.error('Module error, module %s (%s)' % (module_name, e))
             return False
 
     return True
@@ -119,7 +116,7 @@ def load(module_name):
     if is_module_disabled(module_name):
         return False
 
-    if module_name in __module_list and __module_list[module_name]['instance']:
+    if module_name in __module_list and __module_list[module_name]['instance'] is not None:
         call_module_method(module_name, 'load_configuration')
         return True
 
@@ -149,11 +146,12 @@ def start(module_name):
     if is_module_disabled(module_name):
         return False
 
-    if not module_name in __module_list or not __module_list[module_name]['instance']:
+    if not module_name in __module_list or __module_list[module_name]['instance'] is None:
         return False
 
-    call_module_method(module_name, 'start')
-    __call_method_action(module_name, 'handle_start')
+    # is Circuits module ?
+    if hasattr(__module_list[module_name]['instance'], 'register'):
+        CircuitsManager.register(__module_list[module_name]['instance'])
 
     return True
 
@@ -162,23 +160,15 @@ def start_all():
     """Start all modules.
     """
     __load_module_list()
-    nb = 0
-
-    for module_name in __module_list:
-        if not __module_list[module_name]['disable'] and start(module_name):
-            nb += 1
-
-    Log.debug('%d modules started' % nb)
+    started = [not __module_list[module_name]['disable'] and start(module_name) for module_name in __module_list]
+    Log.debug('%d modules started' % sum(started))
 
 
 def stop(module_name):
     """Stop module.
     """
     Log.debug('stop modules %s' % module_name)
-
     call_module_method(module_name, 'stop')
-    __call_method_action(module_name, 'handle_stop')
-
     return True
 
 
@@ -194,29 +184,6 @@ def stop_all():
     Log.debug('%d modules stoped' % nb)
 
 
-def __call_method_action(module_name, handle_name):
-    """Call a method action.
-    """
-    if not module_name in __module_list:
-        return False
-
-    if not __module_list[module_name]['instance']:
-        return False
-
-    if not handle_name in ['handle_start', 'handle_stop']:
-        return False
-
-    instance = __module_list[module_name]['instance']
-
-    for method_name in dir(instance):
-        for action_method in __action_method_list:
-            if method_name.startswith(action_method['method_name']):
-                action_method[handle_name](
-                    module_name,
-                    getattr(instance, method_name)
-                )
-
-
 def __load_module_list():
     """Add all modules in module_list.
     """
@@ -226,6 +193,7 @@ def __load_module_list():
         return
 
     from core import Daemon
+
     dir_list = sorted(os.listdir(Daemon.MODULES_PATH))
     nb = 0
 
@@ -240,7 +208,7 @@ def __load_module_list():
 
         __module_list[module_name] = {
             'instance': None,
-            'disable':  False,
+            'disable': False,
         }
         nb += 1
 

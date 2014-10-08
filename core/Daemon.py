@@ -1,11 +1,10 @@
 """Librairie to manage daemon.
 """
 
-from core import EventManager
+from core import CircuitsManager
 from core import Log
 from core import ModuleManager
 
-import asyncio
 import os
 import time
 
@@ -32,13 +31,12 @@ def start():
     """Start daemon.
     """
     Log.init()
-    EventManager.bind_auto()
     ModuleManager.init_all()
     ModuleManager.load_all()
     ModuleManager.start_all()
 
     try:
-        asyncio.get_event_loop().run_forever()
+        CircuitsManager.run_loop()
 
     except KeyboardInterrupt:
         Log.debug('Exit : KeyboardInterrupt')
@@ -55,5 +53,3 @@ def stop():
     """
     Log.debug('stop deamon')
     ModuleManager.stop_all()
-    asyncio.get_event_loop().stop()
-
