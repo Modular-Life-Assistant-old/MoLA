@@ -94,6 +94,10 @@ def init(module_name):
             Log.error('Import error, module %s (%s)' % (module_name, e))
             return False
 
+        except AttributeError as e:
+            Log.error('Module error, module %s (%s)' % (module_name, e))
+            return False
+
     return True
 
 
