@@ -54,3 +54,6 @@ docs/_build/
 
 # ide
 .idea
+
+# Other
+*.pid
