@@ -8,10 +8,6 @@ from circuits import Manager
 __manager = Manager()
 
 
-def addHandler(handler):
-    __manager.addHandler(handler)
-
-
 def register(instance):
     instance.register(__manager)
 
