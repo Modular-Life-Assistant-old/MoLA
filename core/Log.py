@@ -5,11 +5,15 @@ import os
 
 
 __logger = None
+LOGS_PATH = ''
 
 
 def init():
     from core import Daemon
     global __logger
+    global LOGS_PATH
+    
+    LOGS_PATH = '%slogs/' % Daemon.ROOT_PATH
     log_list = []
 
     with open('%slog.conf' % Daemon.CONFIGS_PATH) as config_file:
@@ -17,10 +21,8 @@ def init():
 
         # place in log directory
         if 'handlers' in config:
-            log_path = '%slogs/' % Daemon.ROOT_PATH
-
-            if not os.path.exists(log_path):
-                os.makedirs(log_path)
+            if not os.path.exists(LOGS_PATH):
+                os.makedirs(LOGS_PATH)
 
             for handler in config['handlers']:
                 if not 'filters' in config['handlers'][handler]:
@@ -31,7 +33,7 @@ def init():
 
                 if 'filename' in config['handlers'][handler] and config['handlers'][handler]['filename']:
                     config['handlers'][handler]['filename'] = '%s%s' % (
-                        log_path,
+                        LOGS_PATH,
                         config['handlers'][handler]['filename']
                     )
                     log_list.append(config['handlers'][handler] )
