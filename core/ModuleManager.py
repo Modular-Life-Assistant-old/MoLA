@@ -89,6 +89,7 @@ def init(module_name):
                 locals(),
                 ['Module'],
             ).Module()
+            Log.debug('init module %s' % module_name)
 
         except ImportError as e:
             Log.error('Import error, module %s (%s)' % (module_name, e))
@@ -107,7 +108,7 @@ def init_all():
     __load_module_list()
     loaded = [init(module_name) for module_name in __module_list]
 
-    Log.debug('%d modules initialized' % sum(loaded))
+    Log.info('%d modules initialized' % sum(loaded))
 
 
 def load(module_name):
@@ -120,6 +121,7 @@ def load(module_name):
         call_module_method(module_name, 'load_configuration')
         return True
 
+    Log.debug('load module %s' % module_name)
     return False
 
 
@@ -129,13 +131,13 @@ def load_all():
     __load_module_list()
     loaded = [load(module_name) for module_name in __module_list]
 
-    Log.debug('%d modules loaded' % sum(loaded))
+    Log.info('%d modules loaded' % sum(loaded))
 
 
 def restart(module_name):
     """Restart module.
     """
-    Log.debug('restart modules %s' % module_name)
+    Log.info('restart modules %s' % module_name)
     stop(module_name)
     start(module_name)
 
@@ -153,6 +155,7 @@ def start(module_name):
     if hasattr(__module_list[module_name]['instance'], 'register'):
         CircuitsManager.register(__module_list[module_name]['instance'])
 
+    Log.info('start module %s' % module_name)
     return True
 
 
@@ -161,13 +164,13 @@ def start_all():
     """
     __load_module_list()
     started = [not __module_list[module_name]['disable'] and start(module_name) for module_name in __module_list]
-    Log.debug('%d modules started' % sum(started))
+    Log.info('%d modules started' % sum(started))
 
 
 def stop(module_name):
     """Stop module.
     """
-    Log.debug('stop modules %s' % module_name)
+    Log.info('stop module %s' % module_name)
     call_module_method(module_name, 'stop')
     return True
 
@@ -181,7 +184,7 @@ def stop_all():
         if __module_list[module_name]['instance'] and stop(module_name):
             nb += 1
 
-    Log.debug('%d modules stoped' % nb)
+    Log.info('%d modules stoped' % nb)
 
 
 def __load_module_list():
@@ -210,7 +213,8 @@ def __load_module_list():
             'instance': None,
             'disable': False,
         }
+        Log.debug('index module %s' % module_name)
         nb += 1
 
-    Log.debug('%d modules indexed' % nb)
+    Log.info('%d modules indexed' % nb)
 

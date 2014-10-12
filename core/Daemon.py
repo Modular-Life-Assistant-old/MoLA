@@ -39,7 +39,7 @@ def start():
         CircuitsManager.run_loop()
 
     except KeyboardInterrupt:
-        Log.debug('Exit : KeyboardInterrupt')
+        Log.info('Exit : KeyboardInterrupt')
 
     except Exception as e:
         Log.crash(e)
@@ -51,5 +51,5 @@ def start():
 def stop():
     """Stop daemon.
     """
-    Log.debug('stop deamon')
+    Log.info('stop deamon')
     ModuleManager.stop_all()

@@ -50,7 +50,7 @@ def init():
     __logger = logging.getLogger(Daemon.name)
 
     for log in log_list:
-        debug('Log %s in %s' % (
+        info('Log %s in %s' % (
             log['level'] if 'level' in log else 'Unknow level', 
             log['filename']
         ))
