@@ -13,12 +13,15 @@ def call_module_method(module_name, method_name, *arg):
     """Call module method.
     """
     if not module_name in __module_list:
+        Log.error('Module "%s" not found' % module_name)
         return False
 
     if not __module_list[module_name]['instance']:
+        Log.error('Module "%s" has not instance' % module_name)
         return False
 
     if not hasattr(__module_list[module_name]['instance'], method_name):
+        Log.error('Module "%s" has not "%s" methode' % (module_name, method_name))
         return False
 
     return getattr(__module_list[module_name]['instance'], method_name)(*arg)
@@ -118,10 +121,9 @@ def load(module_name):
         return False
 
     if module_name in __module_list and __module_list[module_name]['instance'] is not None:
-        call_module_method(module_name, 'load_configuration')
+        Log.debug('load module %s' % module_name)
         return True
 
-    Log.debug('load module %s' % module_name)
     return False
 
 
@@ -171,7 +173,6 @@ def stop(module_name):
     """Stop module.
     """
     Log.info('stop module %s' % module_name)
-    call_module_method(module_name, 'stop')
     return True
 
 
