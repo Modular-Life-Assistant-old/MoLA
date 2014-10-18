@@ -16,7 +16,7 @@ def call_module_method(module_name, method_name, *arg):
         Log.error('Module "%s" not found' % module_name)
         return False
 
-    if not __module_list[module_name]['instance']:
+    if __module_list[module_name]['instance'] is None:
         Log.error('Module "%s" has not instance' % module_name)
         return False
 
