@@ -26,26 +26,12 @@ def init():
                 os.makedirs(LOGS_PATH)
 
             for handler in config['handlers']:
-                if not 'filters' in config['handlers'][handler]:
-                    config['handlers'][handler]['filters'] = []
-
-                if not 'tagsFilter' in config['handlers'][handler]['filters']:
-                    config['handlers'][handler]['filters'].append('tagsFilter')
-
                 if 'filename' in config['handlers'][handler] and config['handlers'][handler]['filename']:
                     config['handlers'][handler]['filename'] = os.path.join(
                         LOGS_PATH,
                         config['handlers'][handler]['filename']
                     )
-                    log_list.append(config['handlers'][handler] )
-
-            if not 'filters' in config:
-                config['filters'] = {}
-
-            if not 'tagsFilter' in config['filters']:
-                config['filters']['tagsFilter'] = {
-                    '()': 'core.Log.TagsFilter',
-                }
+                    log_list.append(config['handlers'][handler])
 
         logging.config.dictConfig(config)
     __logger = logging.getLogger(Daemon.name)
@@ -87,12 +73,3 @@ def info(text, tag=[]): # score: 20
 
 def warning(text, tag=[]):# score: 30
     __logger.warn(text, extra={'tags':tag})
-
-
-
-class TagsFilter(logging.Filter):
-    def filter(self, record):
-        dir(record)
-        if hasattr(record, 'tags') and record.tags:
-            record.msg += ' Tags: %s' % json.dumps(record.tags)
-        return record
