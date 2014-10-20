@@ -17,11 +17,11 @@ def call_module_method(module_name, method_name, *arg):
         return False
 
     if __module_list[module_name]['instance'] is None:
-        Log.error('Module "%s" has not instance' % module_name)
+        Log.error('Module "%s" is not instantiated' % module_name)
         return False
 
     if not hasattr(__module_list[module_name]['instance'], method_name):
-        Log.error('Module "%s" has not "%s" method' % (module_name, method_name))
+        Log.error('Module "%s" has not a "%s" method' % (module_name, method_name))
         return False
 
     return getattr(__module_list[module_name]['instance'], method_name)(*arg)
@@ -139,7 +139,7 @@ def load_all():
 def restart(module_name):
     """Restart module.
     """
-    Log.info('restart modules %s' % module_name)
+    Log.info('restart "%s" module' % module_name)
     stop(module_name)
     start(module_name)
 
@@ -157,7 +157,7 @@ def start(module_name):
     if hasattr(__module_list[module_name]['instance'], 'register'):
         CircuitsManager.register(__module_list[module_name]['instance'])
 
-    Log.info('start module %s' % module_name)
+    Log.info('start "%s" module' % module_name)
     return True
 
 
@@ -172,7 +172,7 @@ def start_all():
 def stop(module_name):
     """Stop module.
     """
-    Log.info('stop module %s' % module_name)
+    Log.info('stop "%s" module' % module_name)
     return True
 
 
@@ -185,7 +185,7 @@ def stop_all():
         if __module_list[module_name]['instance'] and stop(module_name):
             nb += 1
 
-    Log.info('%d modules stoped' % nb)
+    Log.info('%d modules stopped' % nb)
 
 
 def __load_module_list():
@@ -213,7 +213,7 @@ def __load_module_list():
             'instance': None,
             'disable': False,
         }
-        Log.debug('index module %s' % module_name)
+        Log.debug('index "%s" module' % module_name)
         nb += 1
 
     Log.info('%d modules indexed' % nb)

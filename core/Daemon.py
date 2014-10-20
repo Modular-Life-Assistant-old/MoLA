@@ -9,10 +9,11 @@ import os
 import time
 
 name = 'MoLA'
-start_time = time.time()
+START_TIME = time.time()
 ROOT_PATH = os.sep.join(__file__.split(os.sep)[:-2])
 CONFIGS_PATH = os.path.join(ROOT_PATH, 'configs')
 MODULES_PATH = os.path.join(ROOT_PATH, 'modules')
+
 
 def launch_daemon():
     """start new application.
@@ -38,13 +39,8 @@ def start():
 
     try:
         CircuitsManager.run_loop()
-
-    except KeyboardInterrupt:
-        Log.info('Exit : KeyboardInterrupt')
-
     except Exception as e:
         Log.crash(e)
-
     finally:
         stop()
 
