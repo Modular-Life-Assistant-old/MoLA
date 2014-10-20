@@ -21,7 +21,7 @@ def call_module_method(module_name, method_name, *arg):
         return False
 
     if not hasattr(__module_list[module_name]['instance'], method_name):
-        Log.error('Module "%s" has not "%s" methode' % (module_name, method_name))
+        Log.error('Module "%s" has not "%s" method' % (module_name, method_name))
         return False
 
     return getattr(__module_list[module_name]['instance'], method_name)(*arg)
@@ -35,19 +35,19 @@ def disable_module(module_name, disabled=True):
 
     from core import Daemon
 
-    path = '%s%s/disable' % (Daemon.MODULES_PATH, module_name)
+    disable_file = os.path.join(Daemon.MODULES_PATH, module_name, 'disable')
 
     if disabled:
         stop(module_name)
 
-        with open(path, 'a'):
-            os.utime(path, None)
+        with open(disable_file, 'a'):
+            os.utime(disable_file, None)
 
         return True
 
     else:
-        if os.path.isfile(path):
-            os.remove(path)
+        if os.path.isfile(disable_file):
+            os.remove(disable_file)
 
         start(module_name)
 
@@ -63,11 +63,11 @@ def is_disabled(module_name):
     """
     from core import Daemon
 
-    dir_path = '%s%s/' % (Daemon.MODULES_PATH, module_name)
+    dir_path = os.path.join(Daemon.MODULES_PATH, module_name)
     if not os.path.isdir(dir_path):
         return True
 
-    return os.path.isfile('%s/disable' % dir_path)
+    return os.path.isfile(os.path.join(dir_path, 'disable'))
 
 
 def init(module_name):
@@ -79,10 +79,10 @@ def init(module_name):
     if module_name in __module_list and not __module_list[module_name]['instance']:
         from core import Daemon
 
-        dir_path = '%s%s/' % (Daemon.MODULES_PATH, module_name)
+        dir_path = os.path.join(Daemon.MODULES_PATH, module_name)
 
-        module_path = '%sModule.py' % dir_path
-        if not os.path.isfile(module_path):
+        module_file = os.path.join(dir_path, 'Module.py')
+        if not os.path.isfile(module_file):
             return False
 
         try:
@@ -202,7 +202,6 @@ def __load_module_list():
     nb = 0
 
     for module_name in dir_list:
-        dir_path = '%s%s/' % (Daemon.MODULES_PATH, module_name)
 
         if is_disabled(module_name):
             continue

@@ -10,14 +10,15 @@ import time
 
 name = 'MoLA'
 start_time = time.time()
-ROOT_PATH = '%s/' % os.sep.join(__file__.split(os.sep)[:-2])
-CONFIGS_PATH = '%sconfigs/' % ROOT_PATH
-MODULES_PATH = '%smodules/' % ROOT_PATH
+ROOT_PATH = os.sep.join(__file__.split(os.sep)[:-2])
+CONFIGS_PATH = os.path.join(ROOT_PATH, 'configs')
+MODULES_PATH = os.path.join(ROOT_PATH, 'modules')
 
 def launch_daemon():
     """start new application.
     """
-    return os.system('"%sdaemon.py" 1> /dev/null 2>&1 &' % ROOT_PATH) == 0
+    daemon_path = os.path.join(ROOT_PATH, 'daemon.py')
+    return os.system('"%s" 1> /dev/null 2>&1 &' % daemon_path) == 0
 
 
 def restart():
@@ -25,7 +26,7 @@ def restart():
     """
     stop()
     launch_daemon()
-    
+
 
 def start():
     """Start daemon.

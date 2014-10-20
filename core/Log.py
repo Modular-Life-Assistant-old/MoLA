@@ -13,10 +13,11 @@ def init():
     global __logger
     global LOGS_PATH
     
-    LOGS_PATH = '%slogs/' % Daemon.ROOT_PATH
+    LOGS_PATH = os.path.join(Daemon.ROOT_PATH, 'logs')
+    LOG_CONF = os.path.join(Daemon.CONFIGS_PATH, 'log.conf')
     log_list = []
 
-    with open('%slog.conf' % Daemon.CONFIGS_PATH) as config_file:
+    with open(LOG_CONF) as config_file:
         config = json.load(config_file)
 
         # place in log directory
@@ -32,7 +33,7 @@ def init():
                     config['handlers'][handler]['filters'].append('tagsFilter')
 
                 if 'filename' in config['handlers'][handler] and config['handlers'][handler]['filename']:
-                    config['handlers'][handler]['filename'] = '%s%s' % (
+                    config['handlers'][handler]['filename'] = os.path.join(
                         LOGS_PATH,
                         config['handlers'][handler]['filename']
                     )
