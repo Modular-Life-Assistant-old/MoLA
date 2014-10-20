@@ -58,7 +58,7 @@ def get(module_name):
     return __module_list[module_name]['instance'] if module_name in __module_list else None
 
 
-def is_module_disabled(module_name):
+def is_disabled(module_name):
     """Is module disable.
     """
     from core import Daemon
@@ -73,7 +73,7 @@ def is_module_disabled(module_name):
 def init(module_name):
     """Init module.
     """
-    if is_module_disabled(module_name):
+    if is_disabled(module_name):
         return False
 
     if module_name in __module_list and not __module_list[module_name]['instance']:
@@ -117,7 +117,7 @@ def init_all():
 def load(module_name):
     """Load module.
     """
-    if is_module_disabled(module_name):
+    if is_disabled(module_name):
         return False
 
     if module_name in __module_list and __module_list[module_name]['instance'] is not None:
@@ -147,7 +147,7 @@ def restart(module_name):
 def start(module_name):
     """Start module.
     """
-    if is_module_disabled(module_name):
+    if is_disabled(module_name):
         return False
 
     if not module_name in __module_list or __module_list[module_name]['instance'] is None:
@@ -204,7 +204,7 @@ def __load_module_list():
     for module_name in dir_list:
         dir_path = '%s%s/' % (Daemon.MODULES_PATH, module_name)
 
-        if is_module_disabled(module_name):
+        if is_disabled(module_name):
             continue
 
         if '__pycache__' in module_name:
