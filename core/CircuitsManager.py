@@ -25,3 +25,9 @@ def run_loop():
         ))
 
     __manager.run()
+    
+
+def stop():
+    __manager.stop()
+
+

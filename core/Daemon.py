@@ -50,3 +50,4 @@ def stop():
     """
     Log.info('stop deamon')
     ModuleManager.stop_all()
+    CircuitsManager.stop()
