@@ -6,6 +6,7 @@ from core import Log
 from core import ModuleManager
 
 import os
+import sys
 import time
 
 name = 'MoLA'
@@ -51,3 +52,5 @@ def stop():
     Log.info('stop deamon')
     ModuleManager.stop_all()
     CircuitsManager.stop()
+    sys.exit(0) 
+
