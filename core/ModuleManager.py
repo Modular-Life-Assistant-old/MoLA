@@ -9,7 +9,7 @@ import os
 __module_list = {}  # module data
 
 
-def call_module_method(module_name, method_name, *arg):
+def call_module_method(module_name, method_name, *arg, **kwargs):
     """Call module method.
     """
     if not module_name in __module_list:
@@ -24,7 +24,7 @@ def call_module_method(module_name, method_name, *arg):
         Log.error('Module "%s" has not a "%s" method' % (module_name, method_name))
         return False
 
-    return getattr(__module_list[module_name]['instance'], method_name)(*arg)
+    return getattr(__module_list[module_name]['instance'], method_name)(*arg, **kwargs)
 
 
 def disable_module(module_name, disabled=True):
