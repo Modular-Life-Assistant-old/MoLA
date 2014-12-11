@@ -10,3 +10,8 @@ Modular's life assistant
     pip install -r requirements.txt
     cd modules
     git clone https://github.com/treemo/MoLA-cluster-module.git cluster
+
+# command arguments
+- --no-daemon
+> Do no run in the background.
+
