@@ -2,7 +2,7 @@ import json
 import logging
 import logging.config
 import os
-
+import sys
 
 __logger = None
 LOGS_PATH = ''
@@ -42,6 +42,18 @@ def init():
             log['filename']
         ))
 
+    # rewrite currentframe function  (for receive correct file / line number)
+    if hasattr(sys, '_getframe'):
+        currentframe = lambda: sys._getframe(4)
+    else: #pragma: no cover
+        def currentframe():
+            """Return the frame object for the caller's stack frame."""
+            try:
+                raise Exception
+            except Exception:
+                return sys.exc_info()[3].tb_frame.f_back
+
+    logging.currentframe = currentframe
 
 def crash(text):
     __logger.critical(text, exc_info=True)
