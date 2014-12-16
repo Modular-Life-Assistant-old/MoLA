@@ -4,6 +4,7 @@ from core import Log
 
 from circuits.app import daemon
 from circuits import Manager
+import sys
 
 __manager = Manager()
 
@@ -17,7 +18,7 @@ def run_loop():
         from circuits import Debugger
         register(Debugger(logger=Log.get_logger()))
 
-    else:
+    if not '--no-daemon' in sys.argv:
         from core import Daemon
         register(daemon.Daemon(
             '%s.pid' % Daemon.name,
@@ -25,9 +26,8 @@ def run_loop():
         ))
 
     __manager.run()
-    
+
 
 def stop():
     __manager.stop()
-
 
