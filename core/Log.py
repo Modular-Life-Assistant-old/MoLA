@@ -55,20 +55,21 @@ def init():
 
     logging.currentframe = currentframe
 
-def crash(text):
-    __logger.critical(text, exc_info=True)
+def crash(text, *args, **kwargs):
+    kwargs['exc_info'] = True
+    __logger.critical(text, *args, **kwargs)
 
 
-def critical(text, tag=[]): # score: 50
-    __logger.critical(text, extra={'tags':tag})
+def critical(text, *args, **kwargs): # score: 50
+    __logger.critical(text, *args, **kwargs)
 
 
-def debug(text, tag=[]): # score: 10
-    __logger.debug(text, extra={'tags':tag})
+def debug(text, *args, **kwargs): # score: 10
+    __logger.debug(text, *args, **kwargs)
 
 
-def error(text, tag=[]): # score: 40
-    __logger.error(text, extra={'tags':tag})
+def error(text, *args, **kwargs): # score: 40
+    __logger.error(text, *args, **kwargs)
 
 
 def get_logger():
@@ -79,9 +80,9 @@ def has_debug():
     return __logger.isEnabledFor(logging.DEBUG)
 
 
-def info(text, tag=[]): # score: 20
-    __logger.info(text, extra={'tags':tag})
+def info(text, *args, **kwargs): # score: 20
+    __logger.info(text, *args, **kwargs)
 
 
-def warning(text, tag=[]):# score: 30
-    __logger.warn(text, extra={'tags':tag})
+def warning(text, *args, **kwargs):# score: 30
+    __logger.warn(text, *args, **kwargs)
