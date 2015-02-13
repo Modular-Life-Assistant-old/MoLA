@@ -4,17 +4,18 @@ import logging.config
 import os
 import sys
 
+from core.settings import ROOT_PATH, CONFIGS_PATH, NAME
+
 __logger = None
 LOGS_PATH = ''
 
 
 def init():
-    from core import Daemon
     global __logger
     global LOGS_PATH
     
-    LOGS_PATH = os.path.join(Daemon.ROOT_PATH, 'logs')
-    LOG_CONF = os.path.join(Daemon.CONFIGS_PATH, 'log.conf')
+    LOGS_PATH = os.path.join(ROOT_PATH, 'logs')
+    LOG_CONF = os.path.join(CONFIGS_PATH, 'log.conf')
     log_list = []
 
     with open(LOG_CONF) as config_file:
@@ -34,7 +35,7 @@ def init():
                     log_list.append(config['handlers'][handler])
 
         logging.config.dictConfig(config)
-    __logger = logging.getLogger(Daemon.name)
+    __logger = logging.getLogger(NAME)
 
     for log in log_list:
         info('Log %s in %s' % (
