@@ -108,7 +108,7 @@ def init(module_name):
 def init_all():
     """Init all modules.
     """
-    __load_module_list()
+    __index_modules()
     loaded = [init(module_name) for module_name in __module_list]
 
     Log.info('%d modules initialized' % sum(loaded))
@@ -130,10 +130,13 @@ def load(module_name):
 def load_all():
     """Load all modules.
     """
-    __load_module_list()
     loaded = [load(module_name) for module_name in __module_list]
 
     Log.info('%d modules loaded' % sum(loaded))
+
+
+def reindex_modules():
+    __index_modules(reload=True)
 
 
 def restart(module_name):
@@ -164,7 +167,6 @@ def start(module_name):
 def start_all():
     """Start all modules.
     """
-    __load_module_list()
     started = [not __module_list[module_name]['disable'] and start(module_name) for module_name in __module_list]
     Log.info('%d modules started' % sum(started))
 
@@ -188,12 +190,12 @@ def stop_all():
     Log.info('%d modules stopped' % nb)
 
 
-def __load_module_list():
+def __index_modules(reload=False):
     """Add all modules in module_list.
     """
     global __module_list
 
-    if __module_list:
+    if __module_list and not reload:
         return
 
     from core import Daemon
@@ -201,6 +203,7 @@ def __load_module_list():
     dir_list = sorted(os.listdir(Daemon.MODULES_PATH))
     nb = 0
 
+    __module_list.clear()
     for module_name in dir_list:
 
         if is_disabled(module_name):
@@ -217,4 +220,3 @@ def __load_module_list():
         nb += 1
 
     Log.info('%d modules indexed' % nb)
-
