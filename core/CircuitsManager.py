@@ -3,7 +3,7 @@
 from core import Log
 
 from circuits.app import daemon
-from circuits import Manager
+from circuits import Manager, Worker
 import sys
 
 __manager = Manager()
@@ -25,6 +25,7 @@ def run_loop():
             path=Daemon.ROOT_PATH
         ))
 
+    Worker().register(__manager)
     __manager.run()
 
 
