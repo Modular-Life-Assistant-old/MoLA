@@ -1,10 +1,11 @@
 """Librairie to manage modules.
 """
 
-from core import CircuitsManager
-from core import Log
+from core import CircuitsManager, Log
+from core.settings import *
 
 import os
+
 
 __active_modules_name = []
 __modules_data = {}  # module data
@@ -34,9 +35,7 @@ def disable_module(module_name, disabled=True):
     if module_name in __modules_data:
         return False
 
-    from core import Daemon
-
-    disable_file = os.path.join(Daemon.MODULES_PATH, module_name, 'disable')
+    disable_file = os.path.join(MODULES_PATH, module_name, 'disabled')
 
     if disabled:
         stop(module_name)
@@ -56,7 +55,9 @@ def disable_module(module_name, disabled=True):
 def get(module_name):
     """Get module instance.
     """
-    return __modules_data[module_name]['instance'] if module_name in __modules_data else None
+    # If module is on __modules_data we return its instance
+    return __modules_data[module_name]['instance'] if \
+        module_name in __modules_data else None
 
 
 def get_info(module_name, key, default=None):
@@ -83,17 +84,17 @@ def get_all_modules():
     """
     return __modules_data.keys()
 
-
 def is_disabled(module_name):
-    """Is module disable.
+    """Is module disabled.
     """
-    from core import Daemon
+    dir_path = os.path.join(MODULES_PATH, module_name)
 
-    dir_path = os.path.join(Daemon.MODULES_PATH, module_name)
+    # If path is not a directory the module is disabled
     if not os.path.isdir(dir_path):
         return True
 
-    return os.path.isfile(os.path.join(dir_path, 'disable'))
+    # We check if disabled file exist inside module directory
+    return os.path.isfile(os.path.join(dir_path, 'disabled'))
 
 
 def init(module_name):
@@ -103,9 +104,8 @@ def init(module_name):
         return False
 
     if module_name in __modules_data and not __modules_data[module_name]['instance']:
-        from core import Daemon
 
-        dir_path = os.path.join(Daemon.MODULES_PATH, module_name)
+        dir_path = os.path.join(MODULES_PATH, module_name)
 
         module_file = os.path.join(dir_path, 'Module.py')
         if not os.path.isfile(module_file):
@@ -134,32 +134,14 @@ def init(module_name):
 def init_all():
     """Init all modules.
     """
-    __load_module_list()
-    loaded = [init(module_name) for module_name in __modules_data]
+    __index_modules()
+    initialized = [init(module_name) for module_name in __modules_data]
 
-    Log.info('%d modules initialized' % sum(loaded))
-
-
-def load(module_name):
-    """Load module.
-    """
-    if is_disabled(module_name):
-        return False
-
-    if module_name in __modules_data and __modules_data[module_name]['instance'] is not None:
-        Log.debug('load module %s' % module_name)
-        return True
-
-    return False
+    Log.info('%d modules initialized' % sum(initialized))
 
 
-def load_all():
-    """Load all modules.
-    """
-    __load_module_list()
-    loaded = [load(module_name) for module_name in __modules_data]
-
-    Log.info('%d modules loaded' % sum(loaded))
+def reindex_modules():
+    __index_modules(reload=True)
 
 
 def restart(module_name):
@@ -182,6 +164,8 @@ def start(module_name):
     # is Circuits module ?
     if hasattr(__modules_data[module_name]['instance'], 'register'):
         CircuitsManager.register(__modules_data[module_name]['instance'])
+    elif hasattr(__modules_data[module_name]['instance'], 'started'):
+        __modules_data[module_name]['instance'].started()
 
     __active_modules_name.append(module_name)
     Log.info('start "%s" module' % module_name)
@@ -191,8 +175,7 @@ def start(module_name):
 def start_all():
     """Start all modules.
     """
-    __load_module_list()
-    started = [not __modules_data[module_name]['disable'] and start(module_name) for module_name in __modules_data]
+    started = [not __modules_data[module_name]['disabled'] and start(module_name) for module_name in __modules_data]
     Log.info('%d modules started' % sum(started))
 
 
@@ -201,6 +184,14 @@ def stop(module_name):
     """
     __active_modules_name.remove(module_name)
     Log.info('stop "%s" module' % module_name)
+
+    if hasattr(__modules_data[module_name]['instance'], 'unregister'):
+        CircuitsManager.unregister(__modules_data[module_name]['instance'])
+    elif hasattr(__modules_data[module_name]['instance'], 'stopped'):
+        __modules_data[module_name]['instance'].stopped()
+
+    __modules_data.pop(module_name)
+
     return True
 
 
@@ -216,19 +207,18 @@ def stop_all():
     Log.info('%d modules stopped' % nb)
 
 
-def __load_module_list():
+def __index_modules(reload=False):
     """Add all modules in module_list.
     """
     global __modules_data
 
-    if __modules_data:
+    if __modules_data and not reload:
         return
 
-    from core import Daemon
-
-    dir_list = sorted(os.listdir(Daemon.MODULES_PATH))
+    dir_list = sorted(os.listdir(MODULES_PATH))
     nb = 0
 
+    __modules_data.clear()
     for module_name in dir_list:
 
         if is_disabled(module_name):
@@ -239,7 +229,7 @@ def __load_module_list():
 
         __modules_data[module_name] = {
             'instance': None,
-            'disable': False,
+            'disabled': False,
         }
         Log.debug('index "%s" module' % module_name)
         nb += 1

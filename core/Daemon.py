@@ -4,17 +4,10 @@
 from core import CircuitsManager
 from core import Log
 from core import ModuleManager
+from core.settings import ROOT_PATH
 
 import os
 import sys
-import time
-
-name = 'MoLA'
-START_TIME = time.time()
-ROOT_PATH = os.sep.join(__file__.split(os.sep)[:-2])
-CONFIGS_PATH = os.path.join(ROOT_PATH, 'configs')
-MODULES_PATH = os.path.join(ROOT_PATH, 'modules')
-
 
 def launch_daemon():
     """start new application.
@@ -34,8 +27,8 @@ def start():
     """Start daemon.
     """
     Log.init()
+
     ModuleManager.init_all()
-    ModuleManager.load_all()
     ModuleManager.start_all()
 
     try:

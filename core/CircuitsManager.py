@@ -1,6 +1,7 @@
 """Librairie to manage circuits.
 """
 from core import Log
+from core.settings import NAME, ROOT_PATH
 
 from circuits.app import daemon
 from circuits import Manager, Worker
@@ -19,10 +20,9 @@ def run_loop():
         register(Debugger(logger=Log.get_logger()))
 
     if not '--no-daemon' in sys.argv:
-        from core import Daemon
         register(daemon.Daemon(
-            '%s.pid' % Daemon.name,
-            path=Daemon.ROOT_PATH
+            '%s.pid' % NAME,
+            path=ROOT_PATH
         ))
 
     Worker().register(__manager)
