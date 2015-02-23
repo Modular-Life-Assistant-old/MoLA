@@ -200,7 +200,7 @@ def stop_all():
     """
     nb = 0
 
-    for module_name in __modules_data:
+    for module_name in __modules_data.copy():
         if __modules_data[module_name]['instance'] and stop(module_name):
             nb += 1
 
