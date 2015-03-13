@@ -1,26 +1,10 @@
 """Librairie to manage daemon.
 """
-
 from core import CircuitsManager
 from core import Log
 from core import ModuleManager
-from core.settings import ROOT_PATH
 
-import os
 import sys
-
-def launch_daemon():
-    """start new application.
-    """
-    daemon_path = os.path.join(ROOT_PATH, 'daemon.py')
-    return os.system('"%s" 1> /dev/null 2>&1 &' % daemon_path) == 0
-
-
-def restart():
-    """Restart daemon.
-    """
-    stop()
-    launch_daemon()
 
 
 def start():
@@ -45,5 +29,4 @@ def stop():
     Log.info('stop deamon')
     ModuleManager.stop_all()
     CircuitsManager.stop()
-    sys.exit(0) 
-
+    sys.exit(0)
