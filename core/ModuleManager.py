@@ -1,7 +1,7 @@
 """Librairie to manage modules.
 """
 
-from core import CircuitsManager, Log
+from core import Log
 from core.settings import *
 
 import os
@@ -163,6 +163,7 @@ def start(module_name):
 
     # is Circuits module ?
     if hasattr(__modules_data[module_name]['instance'], 'register'):
+        from core import CircuitsManager
         CircuitsManager.register(__modules_data[module_name]['instance'])
     elif hasattr(__modules_data[module_name]['instance'], 'started'):
         __modules_data[module_name]['instance'].started()
@@ -186,6 +187,7 @@ def stop(module_name):
     Log.info('stop "%s" module' % module_name)
 
     if hasattr(__modules_data[module_name]['instance'], 'unregister'):
+        from core import CircuitsManager
         CircuitsManager.unregister(__modules_data[module_name]['instance'])
     elif hasattr(__modules_data[module_name]['instance'], 'stopped'):
         __modules_data[module_name]['instance'].stopped()
