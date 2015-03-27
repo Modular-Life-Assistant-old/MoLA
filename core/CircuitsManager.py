@@ -3,7 +3,7 @@
 from core import Log
 from core import ModuleManager
 
-from circuits import Component, Event, Manager, Worker
+from circuits import Component, Event, handler, Manager, reprhandler, Worker
 
 
 __manager = Manager()
@@ -29,6 +29,23 @@ def call_lib(module_name, method_name, *arg, **kwargs):
     return instance.call(event, instance.channel)
 
 
+@handler("exception", channel="*", priority=100.0)
+def on_exception(self, error_type, value, traceback, handler=None, fevent=None):
+    # based on _on_exception (circuits/core/debugger.py line 67)
+
+    s = []
+    handler = reprhandler(handler) if handler else ''
+    msg = 'ERROR %s (%s) (%s): %s' % (
+        handler, repr(fevent), repr(error_type), repr(value)
+    )
+
+    s.append(msg)
+    s.extend(traceback)
+    s.append("\n")
+
+    Log.critical(''.join(s))
+
+
 def register(instance):
     instance.register(__manager)
 
@@ -37,6 +54,9 @@ def run_loop():
     if Log.has_debug():
         from circuits import Debugger
         register(Debugger(logger=Log.get_logger()))
+
+    else:
+        __manager.addHandler(on_exception)
 
     Worker().register(__manager)
     __manager.run()
