@@ -29,7 +29,12 @@ def call_lib(module_name, method_name, *arg, **kwargs):
     return instance.call(event, instance.channel)
 
 
-@handler("exception", channel="*", priority=100.0)
+def get_events_queue_size():
+    """Returns the number of events in the Event Queue."""
+    return len(__manager)
+
+
+@handler('exception', channel='*', priority=100.0)
 def on_exception(self, error_type, value, traceback, handler=None, fevent=None):
     # based on _on_exception (circuits/core/debugger.py line 67)
 
@@ -41,7 +46,7 @@ def on_exception(self, error_type, value, traceback, handler=None, fevent=None):
 
     s.append(msg)
     s.extend(traceback)
-    s.append("\n")
+    s.append('\n')
 
     Log.critical(''.join(s))
 
