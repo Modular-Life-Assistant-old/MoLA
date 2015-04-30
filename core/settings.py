@@ -1,4 +1,6 @@
 import os
+import re
+import sys
 import time
 
 NAME = 'MoLA'
@@ -7,3 +9,9 @@ ROOT_PATH = os.sep.join(__file__.split(os.sep)[:-2])
 CONFIGS_PATH = os.path.join(ROOT_PATH, 'configs')
 MODULES_PATH = os.path.join(ROOT_PATH, 'modules')
 
+print(sys.argv)
+
+for arg in sys.argv:
+    if '--name=' in arg:
+        NAME = re.sub('[^0-9a-zA-Z]+', '-', arg.split('--name=')[1])
+        break

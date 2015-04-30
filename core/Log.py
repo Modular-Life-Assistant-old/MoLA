@@ -27,10 +27,12 @@ def init():
                 os.makedirs(LOGS_PATH)
 
             for handler in config['handlers']:
-                if 'filename' in config['handlers'][handler] and config['handlers'][handler]['filename']:
+                if 'filename' in config['handlers'][handler] and \
+                        config['handlers'][handler]['filename']:
                     config['handlers'][handler]['filename'] = os.path.join(
-                        LOGS_PATH,
-                        config['handlers'][handler]['filename']
+                        LOGS_PATH, '%s-%s' % (
+                            NAME, config['handlers'][handler]['filename']
+                        )
                     )
                     log_list.append(config['handlers'][handler])
 
