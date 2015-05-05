@@ -1,2 +1,2 @@
 pyinotify==0.9.4
--e hg+ssh://hg@bitbucket.org/circuits/circuits/@e72881d4c60fc3813cd6c17866a1e41514d35527#egg=circuits
+-e git://github.com/circuits/circuits.git@d4887278d6da8df5a892ac767dfebf6db27a2d09#egg=circuits
