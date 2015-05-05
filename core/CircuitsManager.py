@@ -9,7 +9,7 @@ from circuits import Component, Event, handler, Manager, reprhandler, Worker
 __manager = Manager()
 
 
-def call_lib(module_name, method_name, *arg, **kwargs):
+def call_lib(module_name, method_name, *arg, call_lib_priority=0, **kwargs):
     """Call lib.
     """
     instance = module_name if isinstance(module_name, Component) else \
@@ -26,7 +26,7 @@ def call_lib(module_name, method_name, *arg, **kwargs):
         return False
 
     event = Event.create(method_name, *arg, **kwargs)
-    return instance.call(event, instance.channel)
+    return instance.call(event, instance.channel, priority=call_lib_priority)
 
 
 def get_events_queue_size():
