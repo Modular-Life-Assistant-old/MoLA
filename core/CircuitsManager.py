@@ -1,5 +1,6 @@
 """Librairie to manage circuits.
 """
+from circuits.core.manager import CallValue
 from core import Log
 from core import ModuleManager
 
@@ -17,13 +18,13 @@ def call_lib(module_name, method_name, *arg, call_lib_priority=0, **kwargs):
 
     if isinstance(instance, Component) is None:
         Log.error('Module "%s" not found' % module_name)
-        return False
+        return CallValue(False)
 
     if not hasattr(instance, method_name):
         Log.error('Module "%s" has not a "%s" method' % (
             module_name, method_name
         ))
-        return False
+        return CallValue(False)
 
     event = Event.create(method_name, *arg, **kwargs)
     return instance.call(event, instance.channel, priority=call_lib_priority)
