@@ -121,11 +121,17 @@ def init(module_name):
             Log.debug('init module %s' % module_name)
 
         except ImportError as e:
-            Log.error('Import error, module %s (%s)' % (module_name, e))
+            Log.error(
+                'Import error, module %s (%s):' % (module_name, e),
+                exc_info=True
+            )
             return False
 
         except AttributeError as e:
-            Log.error('Module error, module %s (%s)' % (module_name, e))
+            Log.error(
+                'Module error, module %s (%s)' % (module_name, e),
+                exc_info=True
+            )
             return False
 
     return True
