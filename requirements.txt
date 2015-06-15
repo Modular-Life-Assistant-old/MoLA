@@ -1,2 +1,2 @@
 pyinotify==0.9.4
--e git://github.com/circuits/circuits.git@16d52a1157bae28325c9e2b497450b47667315a9#egg=circuits
+-e git://github.com/circuits/circuits.git@2ac202fb6fdbdb1d09677c7f85ad0c72bcefa30c#egg=circuits
