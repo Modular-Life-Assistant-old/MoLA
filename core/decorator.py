@@ -20,7 +20,7 @@ def mutex(f):
         else:
             self.mutex_decorator = [key]
 
-        yield from f(self, *args, **kwargs)
+        yield (yield f(self, *args, **kwargs))
         self.mutex_decorator.remove(key)
     return inner
 
