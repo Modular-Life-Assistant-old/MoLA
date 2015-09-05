@@ -1,6 +1,5 @@
 """Librairie to manage daemon.
 """
-from core import CircuitsManager
 from core import Log
 from core import ModuleManager
 
@@ -16,11 +15,11 @@ def start():
     ModuleManager.start_all()
 
     try:
-        CircuitsManager.run_loop()
-    except Exception as e:
-        Log.crash(e)
-    finally:
-        stop()
+        ModuleManager.run_loop()
+    except KeyboardInterrupt:
+        pass
+
+    stop()
 
 
 def stop():
@@ -28,5 +27,4 @@ def stop():
     """
     Log.info('stop deamon')
     ModuleManager.stop_all()
-    CircuitsManager.stop()
     sys.exit(0)
