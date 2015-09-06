@@ -58,6 +58,7 @@ def init():
 
     logging.currentframe = currentframe
 
+
 def crash(text, *args, **kwargs):
     kwargs['exc_info'] = True
     __logger.critical(text, *args, **kwargs)
