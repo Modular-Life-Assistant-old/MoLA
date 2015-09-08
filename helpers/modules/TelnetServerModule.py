@@ -40,7 +40,7 @@ class TelnetServerModule(TcpServerModule):
             return
 
         command = words[0]
-        args = words[0:]
+        args = words[1:]
         kwargs = {}
 
         if command not in self.__commands:
