@@ -12,18 +12,21 @@ __active_modules_name = []
 __modules_data = {}  # module data
 
 
-def call(module_name, method_name, *arg, **kwargs):
+def call(module_name, method_name, *arg, _optional_call=False, **kwargs):
     """Call module method."""
     if not module_name in __modules_data:
-        Log.error('Module "%s" not found' % module_name)
+        if not _optional_call:
+            Log.error('Module "%s" not found' % module_name)
         return False
 
     if __modules_data[module_name]['instance'] is None:
-        Log.error('Module "%s" is not instantiated' % module_name)
+        if not _optional_call:
+            Log.error('Module "%s" is not instantiated' % module_name)
         return False
 
     if not hasattr(__modules_data[module_name]['instance'], method_name):
-        Log.error('Module "%s" has not a "%s" method' % (module_name, method_name))
+        if not _optional_call:
+            Log.error('Module "%s" has not a "%s" method' % (module_name, method_name))
         return False
 
     return getattr(__modules_data[module_name]['instance'], method_name)(*arg, **kwargs)
@@ -77,6 +80,7 @@ def get_active_modules():
 def get_all_modules():
     """Get all (with disabled) module name list."""
     return __modules_data.keys()
+
 
 def is_disabled(module_name):
     """Is module disabled."""
@@ -159,13 +163,14 @@ def restart(module_name):
 
 def run_loop():
     """Run loop (for update cron)"""
+    from . import Daemon  # loop import
 
     last_timestamp_cron = {
         i: DataFileManager.load('core::ModuleManager', 'cron_%s' % i, 0)
         for i in ['day', 'hour', 'min', 'month', 'week', 'year']
     }
 
-    while True:
+    while Daemon.is_running:
         current_time = time.time()
         current_datetime = datetime.now()
 
@@ -218,6 +223,7 @@ def start(module_name):
         __modules_data[module_name]['instance'].run,
         'module: %s' % module_name
     )
+    __modules_data[module_name]['thread'].setDaemon(True)
     __modules_data[module_name]['thread'].start()
 
     __active_modules_name.append(module_name)
