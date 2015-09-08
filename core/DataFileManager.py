@@ -9,23 +9,20 @@ import os
 
 
 def delete(module_name, file_name):
-    """Delete content data.
-    """
+    """Delete content data."""
     path = get_path(module_name, file_name)
 
     if os.path.isfile(path):
         os.remove(path)
 
 def get_path(module_name, file_name):
-    """Get data file path.
-    """
+    """Get data file path."""
     hash = hmac.new(module_name.encode(), file_name.encode(), sha256).hexdigest()
     return os.path.join(DATA_PATH, hash)
 
 
 def load(module_name, file_name, default_value=None):
-    """Get content data.
-    """
+    """Get content data."""
     path = get_path(module_name, file_name)
 
     if not os.path.isfile(path):
@@ -36,8 +33,7 @@ def load(module_name, file_name, default_value=None):
 
 
 def save(module_name, file_name, content):
-    """Set content data.
-    """
+    """Set content data."""
     with open(get_path(module_name, file_name), 'w') as f:
         json.dump(content, f)
 
