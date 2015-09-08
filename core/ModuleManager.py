@@ -170,7 +170,7 @@ def run_loop():
         for i in ['day', 'hour', 'min', 'month', 'week', 'year']
     }
 
-    while Daemon.is_running:
+    while Daemon.is_running():
         current_time = time.time()
         current_datetime = datetime.now()
 
