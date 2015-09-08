@@ -4,7 +4,6 @@ from core.settings import MODULES_PATH
 import gettext
 import locale
 import os
-import sys
 
 
 class InternalBaseModule:
@@ -12,6 +11,30 @@ class InternalBaseModule:
     module_name = ''
     is_running = False
     _translate = None
+
+    def add_crash(self, text, *args, **kwargs):
+        """Add a crash message to logger"""
+        Log.crash('module %s: %s' % (self.module_name, text), *args, **kwargs)
+
+    def add_critical(self, text, *args, **kwargs):
+        """Add a critical message to logger"""
+        Log.warning('module %s: %s' % (self.module_name, text), *args, **kwargs)
+
+    def add_debug(self, text, *args, **kwargs):
+        """Add a debug message to logger"""
+        Log.debug('module %s: %s' % (self.module_name, text), *args, **kwargs)
+
+    def add_error(self, text, *args, **kwargs):
+        """Add a error message to logger"""
+        Log.error('module %s: %s' % (self.module_name, text), *args, **kwargs)
+
+    def add_info(self, text, *args, **kwargs):
+        """Add a message to logger"""
+        Log.info('module %s: %s' % (self.module_name, text), *args, **kwargs)
+
+    def add_warning(self, text, *args, **kwargs):
+        """Add a warning message to logger"""
+        Log.warning('module %s: %s' % (self.module_name, text), *args, **kwargs)
 
     def call(self, module_name, method_name, *arg, **kwargs):
         """call a method of other module."""
