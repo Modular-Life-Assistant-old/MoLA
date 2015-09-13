@@ -15,7 +15,7 @@ class TelnetServerModule(TcpServerModule):
 
             send_handler(line)
 
-    def command_not_found(self, command, args, kwargs, client_key):
+    def command_not_found(self, command, kwargs, client_key):
         """Command not found handler"""
         self.send('command "%s" not found' % command, client_key)
 
@@ -39,17 +39,18 @@ class TelnetServerModule(TcpServerModule):
         if not words:
             return
 
-        command = words[0]
-        args = words[1:]
         kwargs = {}
 
-        if command not in self.__commands:
-            return self.command_not_found(command, args, kwargs, client_key)
+        for size in reversed(range(len(words)+1)):
+            command = ' '.join(words[0:size])
+            args = words[size+1:]
 
-        def send_handler(msg):
-            self.send(msg, client_key)
+            if command in self.__commands:
+                def send_handler(msg):
+                    self.send(msg, client_key)
+                return self.__commands[command]['handler'](send_handler, args, kwargs, client_key)
 
-        self.__commands[command]['handler'](send_handler, args, kwargs, client_key)
+        return self.command_not_found(' '.join(words), kwargs, client_key)
 
     def register_command(self, command, handler, description='', full_command='', help_handler=None):
         """register handler for a command"""
