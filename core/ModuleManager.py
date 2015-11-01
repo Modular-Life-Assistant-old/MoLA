@@ -119,7 +119,7 @@ def init(module_name):
                 del(module)
                 return False
 
-            module.module_name = module_name
+            module.name = module_name
             module.internal_init()
             __modules_data[module_name]['instance'] = module
             Log.debug('init module %s' % module_name)
