@@ -11,6 +11,13 @@ class BaseDevice(InternalBaseDevice):
         """This device has been initialized"""
         pass
 
+    def get_config(self):
+        """Get config info to save (passed on constructor on restart)
+
+        :return: list of object parameters
+        """
+        return {'args': [], 'kwargs': {}}
+
     def run(self):
         """This device loop running."""
         pass

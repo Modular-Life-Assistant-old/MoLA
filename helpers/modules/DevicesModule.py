@@ -1,22 +1,23 @@
 import time
-from core import NotificationManager
+from core import DataFileManager
 from helpers.modules.BaseModule import BaseModule
 
 
 class DevicesModule(BaseModule):
     devices = {}
+    devices_class = None
     wait_next_update = 5
 
-    def add_device(self, device_object, name=''):
+    def add_device(self, *args, **kwargs):
         """Add a device
 
-        :param device_object:
-        :param name:
+        :param device_object: device object
+        :return: is successful added
         """
-        if not name:
-            name = str(device_object)
-
-        self.devices[name] = device_object
+        device_object = self.devices_class(*args, **kwargs)
+        self.devices[device_object.name] = device_object
+        self.save_config()
+        return True
 
     def del_device(self, device_object_or_name):
         """Remove a device
@@ -31,17 +32,21 @@ class DevicesModule(BaseModule):
         for name, device in self.devices.items():
             if device_object_or_name == device:
                 del(self.devices[name])
+                self.save_config()
                 return True
 
     def internal_init(self):
         super(DevicesModule, self).internal_init()
+        self.load_config()
         devices = self.search_new()
-
-        if not isinstance(devices, list):
-            return
 
         for device in devices:
             self.add_device(device)
+
+    def load_config(self):
+        """Load device from config file"""
+        for device in DataFileManager.load(self.name, 'devices', []):
+            self.add_device(*device['args'], **device['kwargs'])
 
     def run(self):
         """This module loop running."""
@@ -49,6 +54,17 @@ class DevicesModule(BaseModule):
             for device in self.devices.values():
                 device.update()
             time.sleep(self.wait_next_update)
+
+    def save_config(self):
+        """Save devices in config file."""
+        devices_conf = []
+
+        for device in self.devices.values():
+            config = device.get_config()
+            if len(config):
+                devices_conf.append(config)
+
+        DataFileManager.save(self.name, 'devices', devices_conf)
 
     def search_new(self):
         """Search new devices
