@@ -57,6 +57,14 @@ class CameraDevice(BaseDevice):
         """This device update."""
         self.make_snapshot()
 
+    def zoom_in(self):
+        """Increase zoom"""
+        pass
+
+    def zoom_out(self):
+        """Decrease zoom"""
+        pass
+
     def _make_snapshot_done(self, result):
         """Process after make_snapshot method"""
 
