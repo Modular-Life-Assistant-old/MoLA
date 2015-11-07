@@ -1,11 +1,13 @@
 import time
+
 from core import DataFileManager
 from helpers.modules.BaseModule import BaseModule
+from helpers.network import get_arp_infos
 
 
 class DevicesModule(BaseModule):
     devices = {}
-    devices_class = None
+    device_class = None
     wait_next_update = 5
 
     def add_device(self, *args, **kwargs):
@@ -14,7 +16,10 @@ class DevicesModule(BaseModule):
         :param device_object: device object
         :return: is successful added
         """
-        device_object = self.devices_class(*args, **kwargs)
+        if not hasattr(self.device_class, '__call__'):
+            raise TypeError('device_class is not callable')
+
+        device_object = self.device_class(*args, **kwargs)
         self.devices[device_object.name] = device_object
         self.save_config()
         return True
@@ -35,13 +40,17 @@ class DevicesModule(BaseModule):
                 self.save_config()
                 return True
 
+    def device_on_network(self, ip, mac):
+        """Device are detected on network (called by search_devices)
+
+        :param ip: ip adress
+        :param mac: mac adress
+        """
+
     def internal_init(self):
         super(DevicesModule, self).internal_init()
         self.load_config()
-        devices = self.search_new()
-
-        for device in devices:
-            self.add_device(device)
+        self.search_devices()
 
     def load_config(self):
         """Load device from config file"""
@@ -66,9 +75,8 @@ class DevicesModule(BaseModule):
 
         DataFileManager.save(self.name, 'devices', devices_conf)
 
-    def search_new(self):
-        """Search new devices
-
-        :return: list of device object
-        """
-        return []
+    def search_devices(self):
+        """Search all devices on network."""
+        for ip, infos in get_arp_infos().items():
+            if infos['is_dynamic']:
+                self.device_on_network(ip, infos['mac'])
