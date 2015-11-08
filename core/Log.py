@@ -15,7 +15,7 @@ def init():
     global LOGS_PATH
     
     LOGS_PATH = os.path.join(ROOT_PATH, 'logs')
-    LOG_CONF = os.path.join(CONFIGS_PATH, 'log.conf')
+    LOG_CONF = os.path.join(CONFIGS_PATH, 'log.json')
     log_list = []
 
     with open(LOG_CONF) as config_file:
