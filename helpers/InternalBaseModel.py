@@ -3,7 +3,7 @@ from core import Log, EventManager, ModuleManager, NotificationManager
 
 class InternalBaseModel:
     """This class implement the internal methods needed by modules."""
-    name = ''
+    name = 'NO_NAME'
     name_prefix = ''
 
     def __getitem__(self, name):
@@ -17,27 +17,33 @@ class InternalBaseModel:
 
     def add_crash(self, text, *args, **kwargs):
         """Add a crash message to logger"""
-        Log.crash('module %s: %s' % (self.name, text), *args, **kwargs)
+        text = '%s %s: %s' % (self.name_prefix, self.name, text)
+        Log.crash(text, *args, **kwargs)
 
     def add_critical(self, text, *args, **kwargs):
         """Add a critical message to logger"""
-        Log.warning('module %s: %s' % (self.name, text), *args, **kwargs)
+        text = '%s %s: %s' % (self.name_prefix, self.name, text)
+        Log.warning(text, *args, **kwargs)
 
     def add_debug(self, text, *args, **kwargs):
         """Add a debug message to logger"""
-        Log.debug('module %s: %s' % (self.name, text), *args, **kwargs)
+        text = '%s %s: %s' % (self.name_prefix, self.name, text)
+        Log.debug(text, *args, **kwargs)
 
     def add_error(self, text, *args, **kwargs):
         """Add a error message to logger"""
-        Log.error('module %s: %s' % (self.name, text), *args, **kwargs)
+        text = '%s %s: %s' % (self.name_prefix, self.name, text)
+        Log.error(text, *args, **kwargs)
 
     def add_info(self, text, *args, **kwargs):
         """Add a message to logger"""
-        Log.info('module %s: %s' % (self.name, text), *args, **kwargs)
+        text = '%s %s: %s' % (self.name_prefix, self.name, text)
+        Log.info(text, *args, **kwargs)
 
     def add_warning(self, text, *args, **kwargs):
         """Add a warning message to logger"""
-        Log.warning('module %s: %s' % (self.name, text), *args, **kwargs)
+        text = '%s %s: %s' % (self.name_prefix, self.name, text)
+        Log.warning(text, *args, **kwargs)
 
     def call(self, module_name, method_name, *arg, **kwargs):
         """call a method of other module."""
