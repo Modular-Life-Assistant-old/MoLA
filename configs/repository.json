@@ -1,0 +1,14 @@
+{
+  "modules": [
+    "https://raw.githubusercontent.com/Modular-Life-Assistant/MoLA-repository/master/dist/modules/list.json"
+  ],
+  "module_info": [
+    "https://raw.githubusercontent.com/Modular-Life-Assistant/MoLA-repository/master/dist/modules/infos/"
+  ],
+  "projects": [
+    "https://raw.githubusercontent.com/Modular-Life-Assistant/MoLA-repository/master/dist/projects/list.json"
+  ],
+  "project_info": [
+    "https://raw.githubusercontent.com/Modular-Life-Assistant/MoLA-repository/master/dist/projects/infos/"
+  ]
+}

@@ -144,7 +144,7 @@ def init(module_name):
 def init_all():
     """Init all modules."""
     __index_modules()
-    initialized = [init(module_name) for module_name in __modules_data]
+    initialized = [init(module_name) for module_name in __modules_data.copy()]
 
     Log.info('%d modules initialized' % sum(initialized))
 
