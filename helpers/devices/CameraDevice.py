@@ -1,5 +1,4 @@
 import time
-from core import settings
 
 try:
     from PIL import Image, ImageChops, ImageOps, ImageStat  # Pillow
@@ -20,11 +19,13 @@ class CameraDevice(BaseDevice):
         super(CameraDevice, self).__init__(*args, **kwargs)
 
         # bind snapshot_decorator to _make_snapshot_done with decorator
-        def make_snapshot_decorator(make_snapshot, self):
+        def make_snapshot_decorator(make_snapshot):
             def inner():
                 return self._make_snapshot_done(make_snapshot())
+
             return inner
-        self.make_snapshot = make_snapshot_decorator(self.make_snapshot, self)
+
+        self.make_snapshot = make_snapshot_decorator(self.make_snapshot)
 
     def get_snapshot(self):
         """Get an snapshot"""
@@ -75,16 +76,20 @@ class CameraDevice(BaseDevice):
 
         # motion detection check
         if self.__snapshot:
-            motion_detection_score = self.get_motion_detection_score(image, self.__snapshot)
-            if motion_detection_score > self.motion_threshold:
-                self.fire('motion_detection', new=image, old=self.__snapshot, device=self, score=motion_detection_score)
+            score = self.get_motion_detection_score(image, self.__snapshot)
+            if score > self.motion_threshold:
+                self.fire('motion_detection', new=image, old=self.__snapshot,
+                          device=self, score=score)
 
         self.__snapshot_timestamp = time.time()
         self.__snapshot = image
         return image
 
     def get_motion_detection_score(self, image1, image2):
-        image_diff = ImageChops.difference(image1, image2)  # get the difference between the two images
-        image_diff = ImageOps.grayscale(image_diff)  # convert the resulting image into greyscale
-        image_stat = ImageStat.Stat(image_diff)  # find the medium value of the grey pixels
+        # get the difference between the two images
+        image_diff = ImageChops.difference(image1, image2)
+        # convert the resulting image into greyscale
+        image_diff = ImageOps.grayscale(image_diff)
+        # find the medium value of the grey pixels
+        image_stat = ImageStat.Stat(image_diff)
         return image_stat.mean[0]
