@@ -5,7 +5,7 @@ import requests
 from io import BytesIO
 from zipfile import ZipFile
 
-from core import Log, ModuleManager
+from core import EventManager, Log, ModuleManager
 from core.settings import CONFIGS_PATH, MODULES_PATH
 
 
@@ -58,8 +58,12 @@ def install_module(module_name):
         content_dir = ''
         for member in z.namelist():
             if member.startswith('/') or './' in member:
-                Log.critical('Security threat on "%s" module install (%s)' % (
-                             module_name, member))
+                msg = 'Security threat on "%s" module install (%s)' % (
+                    module_name, member)
+                Log.critical(msg)
+                EventManager.fire(
+                    __name__, EventManager.Event('security_thread', msg=msg)
+                )
                 return False
 
             if 'Module.py' in member:
