@@ -8,11 +8,14 @@ import threading
 __notify_handlers = {}
 
 
-def notify(source, msg):
+def notify(source, msg, image=None, sound=None):
     """ send a notification."""
-    Log.info('notify: %s' % msg)
+    Log.info('notify: %s / %s / %s' % (msg, image, sound))
     for handler in __notify_handlers.values():
-        threading.Thread(None, handler, 'Notification: %s' % str(handler), (msg,)).start()
+        threading.Thread(
+            target=handler, name='Notification: %s' % str(handler),
+            kwargs={'msg': msg, 'image': image, 'sound': sound}
+        ).start()
 
 
 def register(module_name, handler):

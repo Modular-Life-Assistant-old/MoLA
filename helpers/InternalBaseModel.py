@@ -59,6 +59,7 @@ class InternalBaseModel:
         """Fire an Event."""
         return EventManager.fire(self.name, EventManager.Event(event_name, *args, **kwargs))
 
-    def notify(self, msg):
+    def notify(self, msg, image=None, sound=None):
         """Notify the owner."""
-        return NotificationManager.notify(self.name, msg)
+        return NotificationManager.notify(self.name, msg, image=image,
+                                          sound=sound)
