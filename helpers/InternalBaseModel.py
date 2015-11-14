@@ -49,7 +49,7 @@ class InternalBaseModel:
         """call a method of other module."""
         return ModuleManager.call(module_name, method_name, *arg, **kwargs)
 
-    def internal_init(self):
+    def _internal_init(self):
         self.init()
 
         for event_handler in [h for h in dir(self) if h.endswith('_event')]:

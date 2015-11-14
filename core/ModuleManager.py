@@ -101,9 +101,9 @@ def init(module_name):
 
     if module_name in __modules_data and not __modules_data[module_name]['instance']:
 
-        dir_path = os.path.join(MODULES_PATH, module_name)
+        module_path = os.path.join(MODULES_PATH, module_name)
 
-        module_file = os.path.join(dir_path, 'Module.py')
+        module_file = os.path.join(module_path, 'Module.py')
         if not os.path.isfile(module_file):
             return False
 
@@ -120,7 +120,8 @@ def init(module_name):
                 return False
 
             module.name = module_name
-            module.internal_init()
+            module.module_path = module_path
+            module._internal_init()
             __modules_data[module_name]['instance'] = module
             Log.debug('init module %s' % module_name)
 

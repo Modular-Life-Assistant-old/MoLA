@@ -3,6 +3,7 @@ from helpers.modules.InternalBaseModule import InternalBaseModule
 
 class BaseModule(InternalBaseModule):
     """This class is a template of methods to be implemented by modules."""
+    module_path = ''
 
     def cron_day(self):
         """This method has been called one time by day"""

@@ -47,8 +47,8 @@ class DevicesModule(BaseModule):
         :param mac: mac adress
         """
 
-    def internal_init(self):
-        super(DevicesModule, self).internal_init()
+    def _internal_init(self):
+        super(DevicesModule, self)._internal_init()
         self.load_config()
         self.search_devices()
 

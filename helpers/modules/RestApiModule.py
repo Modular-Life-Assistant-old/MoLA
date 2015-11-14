@@ -12,8 +12,8 @@ class RestApiModule(BaseModule):
     _protocol = 'http'
     _token = None
 
-    def internal_init(self):
-        super().internal_init()
+    def _internal_init(self):
+        super()._internal_init()
         self._loadToken()
 
     def _send(self, url, method='get', *args, **kwargs):
