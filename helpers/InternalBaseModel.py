@@ -52,12 +52,15 @@ class InternalBaseModel:
     def _internal_init(self):
         self.init()
 
+        # automatic register event handlers
         for event_handler in [h for h in dir(self) if h.endswith('_event')]:
-            EventManager.register('_'.join(event_handler.split('_')[:-1]), getattr(self, event_handler))
+            event_name = '_'.join(event_handler.split('_')[:-1])
+            EventManager.register(event_name, getattr(self, event_handler))
 
     def fire(self, event_name, *args, **kwargs):
         """Fire an Event."""
-        return EventManager.fire(self.name, EventManager.Event(event_name, *args, **kwargs))
+        kwargs['source'] = self
+        return EventManager.fire(EventManager.Event(event_name, *args, **kwargs))
 
     def notify(self, msg, image=None, sound=None):
         """Notify the owner."""

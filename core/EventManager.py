@@ -9,17 +9,23 @@ __event_handlers = {}
 
 
 class Event:
-    args = ()
-    name = ''
-    kwargs = {}
+    def __init__(self, name, source, parent=None, *args, **kwargs):
+        """Init a new event
 
-    def __init__(self, name, *args, **kwargs):
+        :param name: event name
+        :param source: event source object (instance of module, device, ...)
+        :param parent: event parent (event object)
+        :param args: event args
+        :param kwargs: event kwargs
+        """
         self.args = args
-        self.name = name
         self.kwargs = kwargs
+        self.name = name
+        self.parent = parent
+        self.source = source
 
 
-def fire(source, event):
+def fire(event):
     """ send a event."""
     Log.debug('event: %s' % event)
 

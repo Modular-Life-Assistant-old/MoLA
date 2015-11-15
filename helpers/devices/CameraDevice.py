@@ -78,9 +78,9 @@ class CameraDevice(BaseDevice):
         if self.__snapshot:
             score = self.get_motion_detection_score(image, self.__snapshot)
             if score > self.motion_threshold:
-                self.fire('analyse_image', image=image, device=self)
-                self.fire('motion_detection', new=image, old=self.__snapshot,
-                          device=self, score=score)
+                event = self.fire('motion_detection', new=image,
+                                  old=self.__snapshot, device=self, score=score)
+                self.fire('analyse_image', image=image, device=self, parent=event)
 
         self.__snapshot_timestamp = time.time()
         self.__snapshot = image
