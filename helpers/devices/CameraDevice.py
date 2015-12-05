@@ -48,7 +48,6 @@ class CameraDevice(BaseDevice):
             (self.zoom_out, CAMERA_ZOOM_OUT_FLAG),
         )
         for handler, flag in assoc:
-            print(handler.__name__, len(handler.__code__.co_code))
             if len(handler.__code__.co_code) > 4: # handler has implemented ?
                 self.flags |= flag
 
