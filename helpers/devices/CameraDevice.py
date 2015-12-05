@@ -13,9 +13,9 @@ CAMERA_STREAMING_FLAG   = 1
 CAMERA_MOVE_TOP_FLAG    = 2
 CAMERA_MOVE_BOTTOM_FLAG = 4
 CAMERA_MOVE_RIGHT_FLAG  = 8
-CAMERA_MOVE_LEFT_FLAG   = 12
-CAMERA_ZOOM_IN_FLAG     = 24
-CAMERA_ZOOM_OUT_FLAG    = 48
+CAMERA_MOVE_LEFT_FLAG   = 16
+CAMERA_ZOOM_IN_FLAG     = 32
+CAMERA_ZOOM_OUT_FLAG    = 64
 
 
 class CameraDevice(BaseDevice):
@@ -48,6 +48,7 @@ class CameraDevice(BaseDevice):
             (self.zoom_out, CAMERA_ZOOM_OUT_FLAG),
         )
         for handler, flag in assoc:
+            print(handler.__name__, len(handler.__code__.co_code))
             if len(handler.__code__.co_code) > 4: # handler has implemented ?
                 self.flags |= flag
 
