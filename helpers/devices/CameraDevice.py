@@ -14,8 +14,9 @@ CAMERA_MOVE_TOP_FLAG    = 2
 CAMERA_MOVE_BOTTOM_FLAG = 4
 CAMERA_MOVE_RIGHT_FLAG  = 8
 CAMERA_MOVE_LEFT_FLAG   = 16
-CAMERA_ZOOM_IN_FLAG     = 32
-CAMERA_ZOOM_OUT_FLAG    = 64
+CAMERA_MOVE_STOP_FLAG   = 32
+CAMERA_ZOOM_IN_FLAG     = 64
+CAMERA_ZOOM_OUT_FLAG    = 128
 
 
 class CameraDevice(BaseDevice):
@@ -44,6 +45,7 @@ class CameraDevice(BaseDevice):
             (self.move_bottom, CAMERA_MOVE_BOTTOM_FLAG),
             (self.move_right, CAMERA_MOVE_RIGHT_FLAG),
             (self.move_left, CAMERA_MOVE_LEFT_FLAG),
+            (self.move_stop, CAMERA_MOVE_STOP_FLAG),
             (self.zoom_in, CAMERA_ZOOM_IN_FLAG),
             (self.zoom_out, CAMERA_ZOOM_OUT_FLAG),
         )
@@ -80,6 +82,10 @@ class CameraDevice(BaseDevice):
         """Camera can move to up?"""
         return self.flags & CAMERA_MOVE_TOP_FLAG
 
+    def has_move_stop(self):
+        """Can stop camera mouving?"""
+        return self.flags & CAMERA_MOVE_STOP_FLAG
+
     def has_streaming(self):
         """Camera can stream?"""
         return self.flags & CAMERA_STREAMING_FLAG
@@ -106,6 +112,10 @@ class CameraDevice(BaseDevice):
 
     def move_right(self):
         """Move camera to right"""
+        pass
+
+    def move_stop(self):
+        """Stop camera mouving"""
         pass
 
     def move_top(self):
