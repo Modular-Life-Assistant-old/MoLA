@@ -24,7 +24,7 @@ class CameraDevice(BaseDevice):
     snapshot_cache = 1  # seconde
     flags = 0
     __snapshot = None
-    __snapshot_timestamp = None
+    __snapshot_timestamp = 0
 
     def __init__(self, *args, **kwargs):
         super(CameraDevice, self).__init__(*args, **kwargs)
@@ -50,10 +50,8 @@ class CameraDevice(BaseDevice):
             (self.zoom_out, CAMERA_ZOOM_OUT_FLAG),
         )
         for handler, flag in assoc:
-            if len(handler.__code__.co_code) > 4: # handler has implemented ?
+            if len(handler.__code__.co_code) > 4:  # handler has implemented ?
                 self.flags |= flag
-
-        print(self.flags)
 
     def get_snapshot(self):
         """Get an snapshot"""
@@ -63,7 +61,7 @@ class CameraDevice(BaseDevice):
         return self.__snapshot
 
     def get_streaming(self):
-        """Use camera to make a snapshot"""
+        """stream video"""
         pass
 
     def has_move_bottom(self):
