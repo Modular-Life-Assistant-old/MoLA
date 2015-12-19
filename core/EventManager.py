@@ -24,6 +24,18 @@ class Event:
         self.parent = parent
         self.source = source
 
+    def __repr__(self):
+        data = []
+        for arg in self.args:
+            data.append(repr(arg))
+
+        for k, v in self.kwargs.items():
+            data.append('%s=%s' % (k, repr(v)))
+
+        return '<%s[%s] (%s)>' % (
+            self.__class__.__name__, self.name, ', '.join(data)
+        )
+
 
 def fire(event):
     """ send a event."""
@@ -33,7 +45,9 @@ def fire(event):
        return
 
     for handler in __event_handlers[event.name]:
-        threading.Thread(None, handler, 'Event: %s at %s' % (event, str(handler)), (event,)).start()
+        threading.Thread(
+            None, handler, 'Event: %s at %s' % (event, str(handler)),(event,)
+        ).start()
 
 
 def register(event_name, handler):
