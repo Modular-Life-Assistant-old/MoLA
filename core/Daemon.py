@@ -2,6 +2,7 @@
 """
 from core import Log
 from core import ModuleManager
+from core import settings
 
 import sys
 
@@ -17,6 +18,7 @@ def is_running():
 def start():
     """Start daemon."""
     global __is_running
+    settings.load_conf()
     Log.init()
 
     ModuleManager.init_all()

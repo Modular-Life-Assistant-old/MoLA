@@ -63,3 +63,4 @@ src/
 
 # MoLA
 data/
+configs/settings.json
