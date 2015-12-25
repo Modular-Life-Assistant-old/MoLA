@@ -4,13 +4,17 @@
         "file": {
             "format": "%(asctime)s %(levelname)s %(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S"
+        },
+        "console": {
+            "format": "%(levelname)-6s %(message)s"
         }
     },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
             "level": "DEBUG",
-            "stream": "ext://sys.stdout"
+            "stream": "ext://sys.stdout",
+            "formatter": "console"
         },
         "error_file": {
             "class": "logging.handlers.RotatingFileHandler",
