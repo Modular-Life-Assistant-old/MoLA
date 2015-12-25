@@ -97,14 +97,15 @@ def is_disabled(module_name):
 def init(module_name):
     """Init module."""
     if is_disabled(module_name):
+        Log.debug('module "%s" ignored: is disabled' % module_name)
         return False
 
     if module_name in __modules_data and not __modules_data[module_name]['instance']:
-
         module_path = os.path.join(MODULES_PATH, module_name)
-
         module_file = os.path.join(module_path, 'Module.py')
+
         if not os.path.isfile(module_file):
+            Log.debug('module "%s" ignored: not "Module.py" file' % module_name)
             return False
 
         try:
@@ -116,6 +117,7 @@ def init(module_name):
             ).Module()
 
             if not module.is_available():
+                Log.debug('module "%s" ignored: not available' % module_name)
                 del(module)
                 return False
 
