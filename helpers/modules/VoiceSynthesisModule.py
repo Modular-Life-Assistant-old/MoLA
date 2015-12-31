@@ -1,12 +1,15 @@
-from helpers.modules.NotificationModule import NotificationModule
+from helpers.modules.BaseModule import BaseModule
 
 
-class VoiceSynthesisModule(NotificationModule):
+class VoiceSynthesisModule(BaseModule):
     voice_quality = 0
 
-    def send(self, msg, image=None, sound=None):
-        """ Send message."""
-        self.textToSpeak(msg)
+    def notification_event(self, event):
+        """Receive notification."""
+        msg = event.kwargs.get('msg', None)
+
+        if msg:
+            self.textToSpeak(msg)
 
     def textToSpeak(self, msg):
         """ transform test to sound."""

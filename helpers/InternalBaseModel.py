@@ -1,4 +1,4 @@
-from core import Log, EventManager, ModuleManager, NotificationManager
+from core import Log, EventManager, ModuleManager
 
 
 class InternalBaseModel:
@@ -49,6 +49,18 @@ class InternalBaseModel:
         """call a method of other module."""
         return ModuleManager.call(module_name, method_name, *arg, **kwargs)
 
+    def fire(self, event_name, *args, **kwargs):
+        """Fire an Event."""
+        kwargs['source'] = self
+        return EventManager.fire(EventManager.Event(event_name, *args, **kwargs))
+
+    def init(self):
+        pass
+
+    def notify(self, msg, image=None, sound=None):
+        """Notify the owner."""
+        return self.fire('notification', msg=msg, image=image, sound=sound)
+
     def _internal_init(self):
         self.init()
 
@@ -56,13 +68,3 @@ class InternalBaseModel:
         for event_handler in [h for h in dir(self) if h.endswith('_event')]:
             event_name = '_'.join(event_handler.split('_')[:-1])
             EventManager.register(event_name, getattr(self, event_handler))
-
-    def fire(self, event_name, *args, **kwargs):
-        """Fire an Event."""
-        kwargs['source'] = self
-        return EventManager.fire(EventManager.Event(event_name, *args, **kwargs))
-
-    def notify(self, msg, image=None, sound=None):
-        """Notify the owner."""
-        return NotificationManager.notify(self.name, msg, image=image,
-                                          sound=sound)
