@@ -1,7 +1,6 @@
 import numpy
 import os
 from io import BytesIO
-from itsdangerous import izip
 from core import Log
 
 # Pillow
@@ -89,7 +88,7 @@ class Image:
             Log.debug('Image diff percent: Different sizes.')
             return 100
 
-        pairs = izip(img1.getdata(), img2.getdata())
+        pairs = zip(img1.getdata(), img2.getdata())
         if len(img1.getbands()) == 1:
             dif = sum(abs(p1-p2) for p1,p2 in pairs)  # for gray-scale jpegs
         else:

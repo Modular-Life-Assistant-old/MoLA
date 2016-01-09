@@ -1,5 +1,4 @@
 import os
-import cv2
 from helpers.objects.Image import Image
 
 try:
@@ -35,6 +34,7 @@ def test_image_empty_parameter():
 
 def test_image_from_opencv():
     """load image from OpenCV object check"""
+    import cv2
     img1 = Image(path=TEST_IMAGE_PATH)
     img2 = Image(opencv_image=cv2.imread(TEST_IMAGE_PATH))
     assert img1.diff_percent(img2) == 0
