@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Modular-Life-Assistant/MoLA.svg?branch=master)](https://travis-ci.org/Modular-Life-Assistant/MoLA)
+
 MoLA
 ====
 
