@@ -1,13 +1,7 @@
 import time
 
-try:
-    from PIL import Image, ImageChops, ImageOps, ImageStat  # Pillow
-except:
-    import Image, ImageChops, ImageOps, ImageStat
-from io import BytesIO
-
 from helpers.devices.BaseDevice import BaseDevice
-
+from helpers.objects.Image import Image
 
 CAMERA_STREAMING_FLAG   = 1
 CAMERA_MOVE_TOP_FLAG    = 2
@@ -132,26 +126,17 @@ class CameraDevice(BaseDevice):
         """Decrease zoom"""
         pass
 
-    def get_motion_detection_score(self, image1, image2):
-        # get the difference between the two images
-        image_diff = ImageChops.difference(image1, image2)
-        # convert the resulting image into greyscale
-        image_diff = ImageOps.grayscale(image_diff)
-        # find the medium value of the grey pixels
-        image_stat = ImageStat.Stat(image_diff)
-        return image_stat.mean[0]
-
     def _make_snapshot_done(self, result):
         """Process after make_snapshot method"""
 
         if not result:
             return
 
-        image = Image.open(BytesIO(result))
+        image = Image(result)
 
         # motion detection check
         if self.__snapshot:
-            score = self.get_motion_detection_score(image, self.__snapshot)
+            score = image.diff_average_pixel_level(self.__snapshot)
             if score > self.motion_threshold:
                 event = self.fire('motion_detection', new=image,
                                   old=self.__snapshot, device=self, score=score)
