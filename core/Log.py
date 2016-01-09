@@ -6,7 +6,7 @@ import sys
 
 from core.settings import ROOT_PATH, CONFIGS_PATH, NAME
 
-__logger = None
+__logger = logging.getLogger(NAME)
 LOGS_PATH = ''
 
 
@@ -37,7 +37,6 @@ def init():
                     log_list.append(config['handlers'][handler])
 
         logging.config.dictConfig(config)
-    __logger = logging.getLogger(NAME)
 
     for log in log_list:
         info('Log %s in %s' % (
