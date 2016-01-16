@@ -4,21 +4,17 @@ from io import BytesIO
 from core import Log
 
 # Pillow
-try:
-    from PIL import ImageChops, ImageOps, ImageStat
-    from PIL import Image as ImagePil
-except:
-    import ImageChops, ImageOps, ImageStat
-    import Image as ImagePil
+from PIL import ImageChops, ImageOps, ImageStat
+from PIL import Image as ImagePil
 
 # OpenCV
 try:
     import cv2
-except:
+except ImportError:
     pass
 
 
-class Image:
+class Image(object):
     def __init__(self, pil_image=None, opencv_image=None, raw=None, path=None):
         # init
         self.__opencv = self.__pil = None
@@ -118,7 +114,7 @@ class Image:
         if self.__opencv is not None:
             return self.__opencv
 
-        raise NotImplemented
+        raise NotImplementedError
 
     def get_pil(self):
         """Get pil image object."""

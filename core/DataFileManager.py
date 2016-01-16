@@ -17,8 +17,8 @@ def delete(module_name, file_name):
 
 def get_path(module_name, file_name):
     """Get data file path."""
-    hash = hmac.new(module_name.encode(), file_name.encode(), sha256).hexdigest()
-    return os.path.join(DATA_PATH, hash)
+    h = hmac.new(module_name.encode(), file_name.encode(), sha256).hexdigest()
+    return os.path.join(DATA_PATH, h)
 
 
 def load(module_name, file_name, default_value=None):

@@ -38,7 +38,7 @@ def stop():
     """Stop daemon."""
     global __is_running
 
-    if __is_running == False:
+    if not __is_running:
         return
 
     Log.info('stop deamon')

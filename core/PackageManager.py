@@ -61,9 +61,9 @@ def install_module(module_name):
                 msg = 'Security threat on "%s" module install (%s)' % (
                     module_name, member)
                 Log.critical(msg)
-                EventManager.fire(
-                    __name__, EventManager.Event('security_thread', msg=msg)
-                )
+                EventManager.fire(EventManager.Event('security_thread',
+                                                     __package__,
+                                                     msg=msg))
                 return False
 
             if 'Module.py' in member:

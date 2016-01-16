@@ -14,7 +14,7 @@ __modules_data = {}  # module data
 
 def call(module_name, method_name, *arg, _optional_call=False, **kwargs):
     """Call module method."""
-    if not module_name in __modules_data:
+    if module_name not in __modules_data:
         if not _optional_call:
             Log.error('Module "%s" not found' % module_name)
         return False
@@ -216,7 +216,7 @@ def start(module_name):
     if is_disabled(module_name):
         return False
 
-    if not module_name in __modules_data or __modules_data[module_name]['instance'] is None:
+    if module_name not in __modules_data or __modules_data[module_name]['instance'] is None:
         return False
 
     __modules_data[module_name]['instance'].started()

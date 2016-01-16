@@ -36,7 +36,8 @@ class RestApiModule(BaseModule):
         return '%s://%s:%d/%s' % (self._protocol, self._hostname, self._port, page)
 
     def _deleteToken(self):
-        self._token = DataFileManager.delete(self.module_name, 'token')
+        DataFileManager.delete(self.module_name, 'token')
+        self._token = None
 
     def _loadToken(self):
         self._token = DataFileManager.load(self.module_name, 'token')

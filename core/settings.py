@@ -47,5 +47,6 @@ def load_conf():
     # get valur in argument
     for arg in sys.argv:
         if '--name=' in arg:
+            global NAME
             NAME = re.sub('[^0-9a-zA-Z]+', '-', arg.split('--name=')[1])
             break

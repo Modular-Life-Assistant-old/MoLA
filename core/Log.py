@@ -11,7 +11,6 @@ LOGS_PATH = ''
 
 
 def init():
-    global __logger
     global LOGS_PATH
     
     LOGS_PATH = os.path.join(ROOT_PATH, 'logs')

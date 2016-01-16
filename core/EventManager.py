@@ -8,7 +8,7 @@ import threading
 __event_handlers = {}
 
 
-class Event:
+class Event(object):
     def __init__(self, name, source, parent=None, *args, **kwargs):
         """Init a new event
 
@@ -42,11 +42,11 @@ def fire(event):
     Log.debug('event: %s' % event)
 
     if event.name not in __event_handlers:
-       return
+        return
 
     for handler in __event_handlers[event.name]:
         threading.Thread(
-            None, handler, 'Event: %s at %s' % (event, str(handler)),(event,)
+            None, handler, 'Event: %s at %s' % (event, str(handler)), (event,)
         ).start()
 
 

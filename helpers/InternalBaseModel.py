@@ -1,7 +1,7 @@
 from core import Log, EventManager, ModuleManager
 
 
-class InternalBaseModel:
+class InternalBaseModel(object):
     """This class implement the internal methods needed by modules."""
     name = 'NO_NAME'
     name_prefix = ''
