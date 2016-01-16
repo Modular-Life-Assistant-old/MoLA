@@ -49,7 +49,6 @@ class DevicesModule(BaseModule):
 
     def _internal_init(self):
         super(DevicesModule, self)._internal_init()
-        self.load_config()
         self.search_devices()
 
     def load_config(self):

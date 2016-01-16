@@ -152,6 +152,23 @@ def init_all():
     Log.info('%d modules initialized' % sum(initialized))
 
 
+def load_config(module_name):
+    """Load module config."""
+    if is_disabled(module_name):
+        return False
+
+    if call(module_name, 'load_config', _optional_call=True):
+        Log.info('start "%s" module' % module_name)
+        return True
+
+    return False
+
+def load_config_all():
+    """Load all modules config."""
+    started = [load_config(module_name) for module_name in __modules_data]
+    Log.info('%d modules config loaded' % sum(started))
+
+
 def reindex_modules():
     """Reload all modules in module_list."""
     __index_modules(reload=True)
@@ -237,7 +254,7 @@ def start(module_name):
 
 def start_all():
     """Start all modules."""
-    started = [not __modules_data[module_name]['disabled'] and start(module_name) for module_name in __modules_data]
+    started = [start(module_name) for module_name in __modules_data]
     Log.info('%d modules started' % sum(started))
 
 

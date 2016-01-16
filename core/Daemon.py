@@ -22,6 +22,7 @@ def start():
     Log.init()
 
     ModuleManager.init_all()
+    ModuleManager.load_config_all()
     ModuleManager.start_all()
 
     __is_running = True

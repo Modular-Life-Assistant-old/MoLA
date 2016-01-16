@@ -34,7 +34,11 @@ class BaseModule(InternalBaseModule):
         return True
 
     def init(self):
-        """This module has been initialized"""
+        """This module has been initialized."""
+        pass
+
+    def load_config(self):
+        """Load module config."""
         pass
 
     def run(self):
