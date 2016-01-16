@@ -48,7 +48,7 @@ class TcpServerModule(BaseModule):
             threading.Thread(
                 None,
                 self.__client_thread,
-                'module: %s tcp_client: %s:%s' % (self.module_name, ip, port),
+                'module: %s tcp_client: %s:%s' % (self.name, ip, port),
                 (client_socket, ip, port)
             ).start()
 
@@ -67,7 +67,7 @@ class TcpServerModule(BaseModule):
 
     def stopped(self):
         for client_key in self.clients:
-            self.send('module %s has been stopped' % self.module_name, client_key)
+            self.send('module %s has been stopped' % self.name, client_key)
             self.close_client(client_key)
 
         self.server.close()
