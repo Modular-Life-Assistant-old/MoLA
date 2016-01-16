@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Modular-Life-Assistant/MoLA.svg?branch=master)](https://travis-ci.org/Modular-Life-Assistant/MoLA)
+[![Code Health](https://landscape.io/github/Modular-Life-Assistant/MoLA/master/landscape.svg?style=flat)](https://landscape.io/github/Modular-Life-Assistant/MoLA/master)
 
 MoLA
 ====
