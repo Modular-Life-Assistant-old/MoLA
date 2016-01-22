@@ -12,20 +12,20 @@ __active_modules_name = []
 __modules_data = {}  # module data
 
 
-def call(module_name, method_name, *arg, _optional_call=False, **kwargs):
+def call(module_name, method_name, *arg, c_optional_call=False, **kwargs):
     """Call module method."""
     if module_name not in __modules_data:
-        if not _optional_call:
+        if not c_optional_call:
             Log.error('Module "%s" not found' % module_name)
         return False
 
     if __modules_data[module_name]['instance'] is None:
-        if not _optional_call:
+        if not c_optional_call:
             Log.error('Module "%s" is not instantiated' % module_name)
         return False
 
     if not hasattr(__modules_data[module_name]['instance'], method_name):
-        if not _optional_call:
+        if not c_optional_call:
             Log.error('Module "%s" has not a "%s" method' % (module_name, method_name))
         return False
 
@@ -157,7 +157,7 @@ def load_config(module_name):
     if is_disabled(module_name):
         return False
 
-    if call(module_name, 'load_config', _optional_call=True):
+    if call(module_name, 'load_config', c_optional_call=True):
         Log.info('start "%s" module' % module_name)
         return True
 
