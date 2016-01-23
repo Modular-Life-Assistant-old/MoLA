@@ -93,19 +93,6 @@ class Image(object):
         ncomponents = img1.size[0] * img1.size[1] * 3
         return (dif / 255.0 * 100) / ncomponents
 
-    def diff_average_pixel_level(self, other_image):
-        """Calculate average (arithmetic mean) pixel level, for each band in the diff greyscale image.
-
-        :param other_image:
-        :return: Average pixel level for each band in the diff greyscale image.
-        """
-        # get the difference between the two images
-        diff = ImageChops.difference(self.get_pil(),other_image.get_pil())
-        # convert the resulting image into greyscale
-        diff = ImageOps.grayscale(diff)
-        # find the medium value of the grey pixels
-        return ImageStat.Stat(diff).mean[0]
-
     def get_opencv(self):
         """Get OpenCV image object."""
         if self.__pil:

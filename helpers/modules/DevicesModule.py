@@ -47,10 +47,6 @@ class DevicesModule(BaseModule):
         :param mac: mac adress
         """
 
-    def _internal_init(self):
-        super(DevicesModule, self)._internal_init()
-        self.search_devices()
-
     def load_config(self):
         """Load device from config file"""
         for device in DataFileManager.load(self.name, 'devices', []):
@@ -79,3 +75,6 @@ class DevicesModule(BaseModule):
         for ip, infos in get_arp_infos().items():
             if infos['is_dynamic']:
                 self.device_on_network(ip, infos['mac'])
+
+    def started(self):
+        self.search_devices()

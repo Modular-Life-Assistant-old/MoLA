@@ -14,7 +14,7 @@ CAMERA_ZOOM_OUT_FLAG    = 128
 
 
 class CameraDevice(BaseDevice):
-    motion_threshold = 6.0
+    motion_threshold = 5  # %
     snapshot_cache = 1  # seconde
     flags = 0
     __snapshot = None
@@ -132,15 +132,17 @@ class CameraDevice(BaseDevice):
         if not result:
             return
 
-        image = Image(result)
+        image = Image(raw=result)
 
         # motion detection check
         if self.__snapshot:
-            score = image.diff_average_pixel_level(self.__snapshot)
-            if score > self.motion_threshold:
+            diff_percent = image.diff_percent(self.__snapshot)
+            if diff_percent > self.motion_threshold:
                 event = self.fire('motion_detection', new=image,
-                                  old=self.__snapshot, device=self, score=score)
-                self.fire('analyse_image', image=image, device=self, parent=event)
+                                  old=self.__snapshot, device=self,
+                                  diff_percent=diff_percent)
+                self.fire('analyse_image', image=image, device=self,
+                          parent=event)
 
         self.__snapshot_timestamp = time.time()
         self.__snapshot = image
