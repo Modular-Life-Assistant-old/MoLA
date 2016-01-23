@@ -6,13 +6,58 @@ import sys
 
 from core.settings import ROOT_PATH, CONFIGS_PATH, NAME
 
-__logger = logging.getLogger(NAME)
+__logger = None
 LOGS_PATH = ''
 
 
-def init():
+def crash(text, *args, **kwargs):
+    __init()
+    kwargs['exc_info'] = True
+    __logger.critical(text, *args, **kwargs)
+
+
+def critical(text, *args, **kwargs):
+    __init()
+    __logger.critical(text, *args, **kwargs)
+
+
+def debug(text, *args, **kwargs):
+    __init()
+    __logger.debug(text, *args, **kwargs)
+
+
+def error(text, *args, **kwargs):
+    __init()
+    __logger.error(text, *args, **kwargs)
+
+
+def get_logger():
+    __init()
+    return __logger
+
+
+def has_debug():
+    __init()
+    return __logger.isEnabledFor(logging.DEBUG)
+
+
+def info(text, *args, **kwargs):
+    __init()
+    __logger.info(text, *args, **kwargs)
+
+
+def warning(text, *args, **kwargs):
+    __init()
+    __logger.warn(text, *args, **kwargs)
+
+
+def __init():
+    if __logger:
+        return
+
     global LOGS_PATH
-    
+    global __logger
+
     LOGS_PATH = os.path.join(ROOT_PATH, 'logs')
     LOG_CONF = os.path.join(CONFIGS_PATH, 'log.json')
     log_list = []
@@ -36,10 +81,11 @@ def init():
                     log_list.append(config['handlers'][handler])
 
         logging.config.dictConfig(config)
+    __logger = logging.getLogger(NAME)
 
     for log in log_list:
         info('Log %s in %s' % (
-            log['level'] if 'level' in log else 'Unknow level', 
+            log['level'] if 'level' in log else 'Unknow level',
             log['filename']
         ))
 
@@ -55,36 +101,3 @@ def init():
                 return sys.exc_info()[3].tb_frame.f_back
 
     logging.currentframe = currentframe
-
-
-def crash(text, *args, **kwargs):
-    kwargs['exc_info'] = True
-    __logger.critical(text, *args, **kwargs)
-
-
-def critical(text, *args, **kwargs): # score: 50
-    __logger.critical(text, *args, **kwargs)
-
-
-def debug(text, *args, **kwargs): # score: 10
-    __logger.debug(text, *args, **kwargs)
-
-
-def error(text, *args, **kwargs): # score: 40
-    __logger.error(text, *args, **kwargs)
-
-
-def get_logger():
-    return __logger
-
-
-def has_debug():
-    return __logger.isEnabledFor(logging.DEBUG)
-
-
-def info(text, *args, **kwargs): # score: 20
-    __logger.info(text, *args, **kwargs)
-
-
-def warning(text, *args, **kwargs):# score: 30
-    __logger.warn(text, *args, **kwargs)

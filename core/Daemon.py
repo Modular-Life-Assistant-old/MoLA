@@ -19,7 +19,6 @@ def start():
     """Start daemon."""
     global __is_running
     settings.load_conf()
-    Log.init()
 
     ModuleManager.init_all()
     ModuleManager.load_config_all()
